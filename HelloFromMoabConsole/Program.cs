@@ -24,6 +24,12 @@ namespace HelloFromMoabConsole
                 double duration = 12.0 / mph;
                 Console.WriteLine($"It will take Carson approximately {duration:0.00} hours to complete SlickRock");
             }
+            else
+            {
+                Console.WriteLine("You suck at understanding what mph must be. Use a number next time, please");
+                Console.Write("A ");
+                Console.WriteLine("line ends now.");
+            }
 
             Console.WriteLine("\r\nPress any key to exit.");
             Console.ReadKey();
