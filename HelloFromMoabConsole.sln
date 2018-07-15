@@ -5,6 +5,10 @@ VisualStudioVersion = 15.0.27703.2018
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HelloFromMoabConsole", "HelloFromMoabConsole\HelloFromMoabConsole.csproj", "{A3009D0E-A4E6-4186-B61A-F3207E486A2F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Moab.Models", "Moab.Models\Moab.Models.csproj", "{204D7684-B47A-488D-B725-51FB808D6B60}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MoabTests", "MoabTests\MoabTests.csproj", "{64731E8B-D7EA-4AD9-857A-1B316207F241}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +19,14 @@ Global
 		{A3009D0E-A4E6-4186-B61A-F3207E486A2F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A3009D0E-A4E6-4186-B61A-F3207E486A2F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A3009D0E-A4E6-4186-B61A-F3207E486A2F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{204D7684-B47A-488D-B725-51FB808D6B60}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{204D7684-B47A-488D-B725-51FB808D6B60}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{204D7684-B47A-488D-B725-51FB808D6B60}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{204D7684-B47A-488D-B725-51FB808D6B60}.Release|Any CPU.Build.0 = Release|Any CPU
+		{64731E8B-D7EA-4AD9-857A-1B316207F241}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{64731E8B-D7EA-4AD9-857A-1B316207F241}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{64731E8B-D7EA-4AD9-857A-1B316207F241}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{64731E8B-D7EA-4AD9-857A-1B316207F241}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
