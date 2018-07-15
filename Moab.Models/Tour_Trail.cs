@@ -25,7 +25,8 @@ namespace Moab.Models
         public int RideOrder { get; set; }
 
         /// <summary>
-        /// Business logic to make sure we have a valid configuration; ensures MaxDifficulty >= MinDifficulty.
+        /// Business logic to make sure we have a valid configuration; ensures Difficulty is inclusively
+        /// within the trail's MinDifficulty and MaxDifficulty.
         /// </summary>
         /// <returns></returns>
         public bool IsValid()
