@@ -4,10 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Nymbl.Models.POCO;
+using Xunit;
+using FluentAssertions;
 
 namespace MoabTests.Models.Helpers
 {
-    class ExerciseImportHelperShould
+    public class ExerciseImportHelperShould
     {
         public ICollection<Exercise> _existingExercises = new HashSet<Exercise>();
 
@@ -55,5 +57,15 @@ namespace MoabTests.Models.Helpers
         }
 
         // Add Unit Tests here...
+        [Fact]
+        public void HaveFourExercises()
+        {
+            // Arrange
+            // Act
+            var count = _existingExercises.Count;
+            // Assert
+
+            count.Should().Be(4);
+        }
     }
 }
