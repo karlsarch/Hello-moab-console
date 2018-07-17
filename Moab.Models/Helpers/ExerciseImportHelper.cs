@@ -30,5 +30,7 @@ namespace Moab.Models.Helpers
         {
             return false;
         }
+
+        #endregion
     }
 }
