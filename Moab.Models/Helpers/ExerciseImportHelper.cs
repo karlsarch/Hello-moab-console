@@ -25,11 +25,19 @@ namespace Moab.Models.Helpers
             //In my method UpdateExercise, I pass in a string array as the CSV file. This implies
             //that at some point we create a method that splits the lines of CSV into arrays.
             //However, we can't do this using the split method because of the commas in some hints.
-            Vector<string>(inputLines) = new Vector<string>;
 
 
 
             return false;
+        }
+
+        #endregion
+
+        #region test code for private methods
+
+        public string[] TestLineSplit(string Line)
+        {
+            return SplitCSVLine(Line);
         }
 
         #endregion
@@ -85,20 +93,20 @@ namespace Moab.Models.Helpers
             return false;
         }
 
-        protected string[] SplitCSVInput(string CSVInput)
-        {
+        //protected string[] SplitCSVInput(string CSVInput)
+        //{
 
-            List<string> LineList = new List<string>();
+        //    List<string> LineList = new List<string>();
 
-            for (int i = 0; i < /*TODO*/; i++)
-            {
+        //    for (int i = 0; i < /*TODO*/; i++)
+        //    {
 
-            }
+        //    }
 
 
 
-            return null;
-        }
+        //    return null;
+        //}
 
         // Splits each line into an array of strings, usable later
         // Done, requires testing to confirm
