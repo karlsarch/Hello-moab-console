@@ -56,7 +56,13 @@ namespace Moab.Models.Helpers
 
         protected void UpdateExercise(Exercise exercise, string[] updateCSV) 
         {
-            
+            //TODO: add support for  generic hint collection
+            exercise.ExerciseCode = updateCSV[0];
+            exercise.Name = updateCSV[1];
+            exercise.EasierHint = updateCSV[6];
+            exercise.HarderHint = updateCSV[7];
+            exercise.HasRepetitionTarget = Convert.ToBoolean(updateCSV[5]); //Is UnitTarget has repetition target? Ask!!!
+            exercise.DateLastUpdated = DateTime.Now;
         }
         #endregion
     }
