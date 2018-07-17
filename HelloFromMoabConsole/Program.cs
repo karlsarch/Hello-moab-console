@@ -18,8 +18,7 @@ namespace HelloFromMoabConsole
             Console.Write("Enter estimated miles per hour for Carson:");
             string input = Console.ReadLine();
 
-            double mph;
-            if (double.TryParse(input, out mph))
+            if (double.TryParse(input, out double mph))
             {
                 double duration = 10.7 / mph; // Slickrock is actually only 10.7 miles long, not 12.  
                 Console.WriteLine($"It will take Carson approximately {duration:0.00} hours to complete SlickRock");
