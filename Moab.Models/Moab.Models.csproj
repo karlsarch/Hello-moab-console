@@ -41,10 +41,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Exercise.cs" />
+    <Compile Include="ExerciseHint.cs" />
+    <Compile Include="Helpers\ExerciseImportHelper.cs" />
     <Compile Include="Tour.cs" />
     <Compile Include="Tour_Trail.cs" />
     <Compile Include="Trail.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
