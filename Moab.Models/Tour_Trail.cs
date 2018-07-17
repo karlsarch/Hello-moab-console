@@ -35,7 +35,7 @@ namespace Moab.Models
             {
                 return true;
             }
-            else if (Difficulty >= (Trail.MinDifficulty ?? 0) && Difficulty <= (Trail.MaxDifficulty ?? Int32.MaxValue))
+            else if (Difficulty >= (Trail.MinDifficulty ?? 0) && Difficulty <= (Trail.MaxDifficulty ?? 1000))
             {
                 return true;
             }
