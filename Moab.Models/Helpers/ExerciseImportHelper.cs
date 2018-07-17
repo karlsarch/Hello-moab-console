@@ -11,6 +11,8 @@ namespace Moab.Models.Helpers
 {
     public class ExerciseImportHelper
     {
+        enum ExerciseCSVColumns { ExerciseCode, Name, CDT_Class, CDT_AtHome, IsMovementDataCollected, UnitTarget, HintEasier, HintHarder, Hint1, Hint2, MDT_Class, MDT_AtHome, OldCode, Name_animationFile, Old_Name_animationFile }
+
         #region Members
 
         #endregion
@@ -42,7 +44,7 @@ namespace Moab.Models.Helpers
             }
         }
         
-        protected Exercise FindExtantExercsieInCollection(ICollection<Exercise> exercises, string exerciseCode)
+        protected Exercise FindExtantExerciseInCollection(ICollection<Exercise> exercises, string exerciseCode)
         {
            foreach (Exercise exercise in exercises)
             {
@@ -57,13 +59,39 @@ namespace Moab.Models.Helpers
         protected void UpdateExercise(Exercise exercise, string[] updateCSV) 
         {
             //TODO: add support for  generic hint collection
-            exercise.ExerciseCode = updateCSV[0];
-            exercise.Name = updateCSV[1];
-            exercise.EasierHint = updateCSV[6];
-            exercise.HarderHint = updateCSV[7];
-            exercise.HasRepetitionTarget = Convert.ToBoolean(updateCSV[5]); //Is UnitTarget has repetition target? Ask!!!
+            exercise.ExerciseCode = updateCSV[(int)ExerciseCSVColumns.ExerciseCode];
+            exercise.Name = updateCSV[(int)ExerciseCSVColumns.Name];
+            exercise.EasierHint = updateCSV[(int)ExerciseCSVColumns.HintEasier];
+            exercise.HarderHint = updateCSV[(int)ExerciseCSVColumns.HintHarder];
+            exercise.HasRepetitionTarget = ConvertYNtoBool(updateCSV[(int)ExerciseCSVColumns.UnitTarget]);
             exercise.DateLastUpdated = DateTime.Now;
         }
+
+        protected bool ConvertYNtoBool(string input)
+        {
+            if (input.ToUpper() == "Y")
+            {
+                return true;
+            }
+            else if (input.ToUpper() == "N")
+            {
+                return false;
+            }
+            return false;
+        }
+
+        protected string[] SplitCSVLine(string CSVLine)
+        {
+            //TODO Implement
+            return null;
+        }
+
+        protected string[] SplitCSVInput(string CSVInput)
+        {
+            //TODO Implement
+            return null;
+        }
+
         #endregion
     }
 }
