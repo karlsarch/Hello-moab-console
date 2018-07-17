@@ -23,8 +23,12 @@ namespace Moab.Models.Helpers
         {
             // TODO: Write the implementation!!!!!
             //In my method UpdateExercise, I pass in a string array as the CSV file. This implies
-            //that at some point we create a method that splits the lines of CSV into arrays. 
-            //However, we can't do this using the split method because of the commas in some hints. 
+            //that at some point we create a method that splits the lines of CSV into arrays.
+            //However, we can't do this using the split method because of the commas in some hints.
+            Vector<string>(inputLines) = new Vector<string>;
+
+
+
             return false;
         }
 
@@ -43,7 +47,7 @@ namespace Moab.Models.Helpers
                 return false;
             }
         }
-        
+
         protected Exercise FindExtantExerciseInCollection(ICollection<Exercise> exercises, string exerciseCode)
         {
            foreach (Exercise exercise in exercises)
@@ -56,7 +60,7 @@ namespace Moab.Models.Helpers
             return null;
         }
 
-        protected void UpdateExercise(Exercise exercise, string[] updateCSV) 
+        protected void UpdateExercise(Exercise exercise, string[] updateCSV)
         {
             //TODO: add support for  generic hint collection
             exercise.ExerciseCode = updateCSV[(int)ExerciseCSVColumns.ExerciseCode];
@@ -67,6 +71,7 @@ namespace Moab.Models.Helpers
             exercise.DateLastUpdated = DateTime.Now;
         }
 
+        // Converts Y into true and N into false
         protected bool ConvertYNtoBool(string input)
         {
             if (input.ToUpper() == "Y")
@@ -80,16 +85,53 @@ namespace Moab.Models.Helpers
             return false;
         }
 
-        protected string[] SplitCSVLine(string CSVLine)
+        protected string[] SplitCSVInput(string CSVInput)
         {
-            //TODO Implement
+
+            List<string> LineList = new List<string>();
+
+            for (int i = 0; i < /*TODO*/; i++)
+            {
+
+            }
+
+
+
             return null;
         }
 
-        protected string[] SplitCSVInput(string CSVInput)
+        // Splits each line into an array of strings, usable later
+        // Done, requires testing to confirm
+        protected string[] SplitCSVLine(string CSVLine)
         {
-            //TODO Implement
-            return null;
+            string[] Line = new string[14];
+            int iterator = 0;
+            for (int i = 0; i < 14; i++)
+            {
+                if (CSVLine[iterator] == '\"')
+                {
+                    int iteratorNext = CSVLine.IndexOf('\"');
+                    if (iteratorNext == -1)
+                    {
+                        throw new FormatException("Invalid Format of CSV Input");
+                    }
+                    string temp = CSVLine.Substring(iterator, iteratorNext - iterator);
+                    Line[i] = temp;
+                    iterator = iteratorNext + 2;
+                }
+                else
+                {
+                    int iteratorNext = CSVLine.IndexOf(',');
+                    if (iteratorNext == -1)
+                    {
+                        throw new FormatException("Invalid Format of CSV Input");
+                    }
+                    string temp = CSVLine.Substring(iterator, iteratorNext - iterator);
+                    Line[i] = temp;
+                    iterator = iteratorNext + 1;
+                }
+            }
+            return Line;
         }
 
         #endregion
