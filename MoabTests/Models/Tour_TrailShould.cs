@@ -12,7 +12,7 @@ namespace MoabTests.Models
     public class Tour_TrailShoud
     {
         [Theory]
-        [InlineData(0, 1000, 0, true)] 
+        [InlineData(0, 1000, 0, true)]
         [InlineData(0, 1000, 1, true)]
         [InlineData(0, 1000, 999, true)]
         [InlineData(0, 1000, 1000, true)]
