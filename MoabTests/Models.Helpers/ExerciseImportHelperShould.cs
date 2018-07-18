@@ -17,7 +17,9 @@ namespace MoabTests.Models.Helpers
         string CSVInputex2 = "FLX_003_R,Old Calf stretch Right,\"Easy, Partner\",As a diamond.,,,,,,,,,,,";
         string CSVInputex3 = "STAB_012_X,Standing weight shift,Don't move,Close your eyes,,,,,,,,,,,";
         string CSVInputex4 = "KSA_999_X,One Finger pull-up,Use two fingers,Pinky Finger,,,,,,,,,,,";
-        string CSVInputAllExercises = "FLX_003_L,Old Calf stretch Left,\"Easy, Partner\",As a diamond.,,,,,,,,,,, \r\n" +
+        string CSVInputAllExercises = "ExerciseCode,Name,CDT_Class,CDT_AtHome,IsMovementDataCollected,UnitTarget," +
+            "HintEasier,HintHarder,Hint1,Hint2,MDT_Class,MDT_AtHome,OldCode,Name_animationFile,Old_Name_animationFile\r\n" +
+            ",,,,,,,,,,,,,,\r\nFLX_003_L,Old Calf stretch Left,\"Easy, Partner\",As a diamond.,,,,,,,,,,, \r\n" +
             "FLX_003_R,Old Calf stretch Right,\"Easy, Partner\",As a diamond.,,,,,,,,,,,\r\n" +
             "STAB_012_X,Standing weight shift,Don't move,Close your eyes,,,,,,,,,,," +
             "KSA_999_X,One Finger pull-up,Use two fingers,Pinky Finger,,,,,,,,,,,";
@@ -91,8 +93,6 @@ namespace MoabTests.Models.Helpers
             {
                 ex1test += (ex1Split[i] + ',');
             }
-            string[] ex2Split = new string[14];
-            ex1Split = TestImport.TestLineSplit(CSVInputex2);
             // Assert
             CSVInputex1.Should().Equals(ex1test);
         }
@@ -143,6 +143,32 @@ namespace MoabTests.Models.Helpers
             }
             // Assert
             CSVInputex4.Should().Equals(ex4test);
+        }
+
+        [Fact]
+        // Checks whether the LineSplitting Function works
+        public void ImportTesting()
+        {
+            // Arrange
+            ExerciseImportHelper Import = new ExerciseImportHelper();
+            // Act
+            List<string[]> AllExList = new List<string[]>();
+            AllExList = Import.TestInputProcessing(CSVInputAllExercises);
+            string AllExtest = "ExerciseCode,Name,CDT_Class,CDT_AtHome,IsMovementDataCollected,UnitTarget," +
+            "HintEasier,HintHarder,Hint1,Hint2,MDT_Class,MDT_AtHome,OldCode,Name_animationFile,Old_Name_animationFile\r\n" +
+            ",,,,,,,,,,,,,,\r\n";
+            for (int i = 1; i < AllExList.Count; i++)
+            {
+                for (int j = 1; j < 14; j++)
+                {
+                    AllExtest += (AllExList[i][j] + ',');
+                }
+                AllExtest += '\n';
+            }
+            string[] ex2Split = new string[14];
+            ex1Split = TestImport.TestLineSplit(CSVInputex2);
+            // Assert
+            CSVInputAllExercises.Should().Equals(AllExtest);
         }
     }
 }

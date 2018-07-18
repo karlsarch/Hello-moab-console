@@ -40,6 +40,11 @@ namespace Moab.Models.Helpers
             return SplitCSVLine(Line);
         }
 
+        public List<string[]> TestInputProcessing(string input)
+        {
+            return SplitCSVInput(input);
+        }
+
         #endregion
 
         #region Private / Protected Methods
