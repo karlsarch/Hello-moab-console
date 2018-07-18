@@ -6,12 +6,14 @@ using System.Threading.Tasks;
 using Nymbl.Models.POCO;
 
 
-
 namespace Moab.Models.Helpers
 {
     public class ExerciseImportHelper
     {
-        enum ExerciseCSVColumns { ExerciseCode, Name, CDT_Class, CDT_AtHome, IsMovementDataCollected, UnitTarget, HintEasier, HintHarder, Hint1, Hint2, MDT_Class, MDT_AtHome, OldCode, Name_animationFile, Old_Name_animationFile }
+        enum ExerciseCSVColumns { ExerciseCode, Name, CDT_Class, CDT_AtHome,
+            IsMovementDataCollected, UnitTarget, HintEasier, HintHarder, Hint1,
+            Hint2, MDT_Class, MDT_AtHome, OldCode, Name_animationFile,
+            Old_Name_animationFile }
 
         #region Members
 
@@ -62,18 +64,31 @@ namespace Moab.Models.Helpers
         #region Private / Protected Methods
         protected bool IsHeaderValid(string header)
         {
-            string checkHeader = "ExerciseCode,Name,CDT_Class,CDT_AtHome,IsMovementDataCollected,UnitTarget,HintEasier,HintHarder,Hint1,Hint2,MDT_Class,MDT_AtHome,OldCode,Name_animationFile,Old_Name_animationFile";
-            if (header == checkHeader)
+            string checkHeader = "ExerciseCode,Name,CDT_Class,CDT_AtHome," +
+                "IsMovementDataCollected,UnitTarget,HintEasier,HintHarder," +
+                "Hint1,Hint2,MDT_Class,MDT_AtHome,OldCode," +
+                "Name_animationFile,Old_Name_animationFile";
+            try
             {
-                return true;
+                string headerWeCare = header.Substring(0, checkHeader.Length);
+                if (headerWeCare.ToLower() == checkHeader.ToLower())
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
             }
-            else
+            catch (ArgumentOutOfRangeException)
             {
                 return false;
             }
+
         }
 
-        protected Exercise FindExtantExerciseInCollection(ICollection<Exercise> exercises, string exerciseCode)
+        protected Exercise FindExtantExerciseInCollection(
+            ICollection<Exercise> exercises, string exerciseCode)
         {
            foreach (Exercise exercise in exercises)
             {
@@ -161,7 +176,7 @@ namespace Moab.Models.Helpers
         private string[] SplitCSVLine(string CSVLine)
         {
             int numberOfColumns = 14;
-            string[] Line = new string[numberOfColumns]; 
+            string[] Line = new string[numberOfColumns];
             int iterator = 0;
             for (int i = 0; i < 14; i++)
             {
