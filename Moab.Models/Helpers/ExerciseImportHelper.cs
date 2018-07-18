@@ -25,6 +25,7 @@ namespace Moab.Models.Helpers
         {
             List<string[]> ImportList = SplitCSVInput(importCSV);
             //TODO: add support in the SplitCSVInput method for checking header
+            IsHeaderValid(importCSV);
             foreach (string[] line in ImportList)
             {
                 Exercise exercise = FindExtantExerciseInCollection(exercises, line[0]);
@@ -62,7 +63,17 @@ namespace Moab.Models.Helpers
         #endregion
 
         #region Private / Protected Methods
-        protected bool IsHeaderValid(string header)
+        protected void IsHeaderValid(string CSVInput)
+        {
+            string[] split = CSVInput.Split('\n');
+            bool Valid = CheckHeader(split[0]);
+            if (!Valid)
+            {
+                throw new FormatException("Header is in improper format.");
+            }
+        }
+
+        private bool CheckHeader(string header)
         {
             string checkHeader = "ExerciseCode,Name,CDT_Class,CDT_AtHome," +
                 "IsMovementDataCollected,UnitTarget,HintEasier,HintHarder," +
