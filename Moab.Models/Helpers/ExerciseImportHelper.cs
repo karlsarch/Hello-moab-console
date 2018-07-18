@@ -33,7 +33,7 @@ namespace Moab.Models.Helpers
 
         #endregion
 
-        #region test code for private methods
+        #region test code for private methods  **REMOVE FROM PRODUCTION CODE**
 
         public string[] TestLineSplit(string Line)
         {
@@ -109,7 +109,7 @@ namespace Moab.Models.Helpers
         //}
 
         // Splits each line into an array of strings, usable later
-        // Done, requires testing to confirm
+        // TODO: Implementation for non-fixed number of hints
         protected string[] SplitCSVLine(string CSVLine)
         {
             string[] Line = new string[14];
@@ -118,25 +118,27 @@ namespace Moab.Models.Helpers
             {
                 if (CSVLine[iterator] == '\"')
                 {
-                    int iteratorNext = CSVLine.IndexOf('\"');
+                    int iteratorNext = CSVLine.IndexOf('\"', iterator);
                     if (iteratorNext == -1)
                     {
                         throw new FormatException("Invalid Format of CSV Input");
                     }
                     string temp = CSVLine.Substring(iterator, iteratorNext - iterator);
                     Line[i] = temp;
-                    iterator = iteratorNext + 2;
+                    iteratorNext += 2;
+                    iterator = iteratorNext;
                 }
                 else
                 {
-                    int iteratorNext = CSVLine.IndexOf(',');
+                    int iteratorNext = CSVLine.IndexOf(',', iterator);
                     if (iteratorNext == -1)
                     {
                         throw new FormatException("Invalid Format of CSV Input");
                     }
                     string temp = CSVLine.Substring(iterator, iteratorNext - iterator);
                     Line[i] = temp;
-                    iterator = iteratorNext + 1;
+                    iteratorNext++;
+                    iterator = iteratorNext;
                 }
             }
             return Line;
