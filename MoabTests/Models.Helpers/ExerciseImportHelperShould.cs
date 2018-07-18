@@ -10,23 +10,43 @@ using FluentAssertions;
 
 namespace MoabTests.Models.Helpers
 {
+    /// <summary>
+    ///     Tests the ExerciseImportHelper Class
+    /// </summary>
     public class ExerciseImportHelperShould
     {
+        #region Members
+
         public ICollection<Exercise> _existingExercises = new HashSet<Exercise>();
-        string CSVInputex1 = "FLX_003_L,Old Calf stretch Left,\"Easy, Partner\",As a diamond.,,,,,,,,,,,";
-        string CSVInputex2 = "FLX_003_R,Old Calf stretch Right,\"Easy, Partner\",As a diamond.,,,,,,,,,,,";
-        string CSVInputex3 = "STAB_012_X,Standing weight shift,Don't move,Close your eyes,,,,,,,,,,,";
-        string CSVInputex4 = "KSA_999_X,One Finger pull-up,Use two fingers,Pinky Finger,,,,,,,,,,,";
-        string CSVInputAllExercises = "ExerciseCode,Name,CDT_Class,CDT_AtHome,IsMovementDataCollected,UnitTarget," +
-            "HintEasier,HintHarder,Hint1,Hint2,MDT_Class,MDT_AtHome,OldCode,Name_animationFile,Old_Name_animationFile\n" +
-            ",,,,,,,,,,,,,,\nFLX_003_L,Old Calf stretch Left,\"Easy, Partner\",As a diamond.,,,,,,,,,,, \n" +
-            "FLX_003_R,Old Calf stretch Right,\"Easy, Partner\",As a diamond.,,,,,,,,,,,\n" +
-            "STAB_012_X,Standing weight shift,Don't move,Close your eyes,,,,,,,,,,,\n" +
-            "KSA_999_X,One Finger pull-up,Use two fingers,Pinky Finger,,,,,,,,,,,";
+        const string CSVInputex1 = "FLX_003_L,Old Calf stretch Left,\"Easy, " +
+            "Partner\",As a diamond.,,,,,,,,,,,";
+        const string CSVInputex2 = "FLX_003_R,Old Calf stretch Right,\"Easy," +
+            " Partner\",As a diamond.,,,,,,,,,,,";
+        const string CSVInputex3 = "STAB_012_X,Standing weight shift,Don't m" +
+            "ove,Close your eyes,,,,,,,,,,,";
+        const string CSVInputex4 = "KSA_999_X,One Finger pull-up,Use two fin" +
+            "gers,Pinky Finger,,,,,,,,,,,";
+        const string CSVInputAllExercises = "ExerciseCode,Name,CDT_Class,CDT" +
+            "_AtHome,IsMovementDataCollected,UnitTarget," +
+            "HintEasier,HintHarder,Hint1,Hint2,MDT_Class,MDT_AtHome,OldCode," +
+            "Name_animationFile,Old_Name_animationFile\n" +
+            ",,,,,,,,,,,,,,\nFLX_003_L,Old Calf stretch Left,\"Easy, Partner" +
+            "\",As a diamond.,,,,,,,,,,, \n" +
+            "FLX_003_R,Old Calf stretch Right,\"Easy, Partner\",As a diamond" +
+            ".,,,,,,,,,,,\n" +
+            "STAB_012_X,Standing weight shift,Don't move,Close your eyes,,,," +
+            ",,,,,,,\nKSA_999_X,One Finger pull-up,Use two fingers,Pinky Fin" +
+            "ger,,,,,,,,,,,";
+
+        #endregion
+
+        #region Constructors
 
         /// <summary>
-        /// Constructor.  Populates the existingExercise collection for use by test methods
+        ///     Constructor.  Populates the existingExercise collection for use
+        ///     by test methods
         /// </summary>
+        /// <tag status=In-Progress/Compiles></tag>
         public ExerciseImportHelperShould()
         {
             var ex1 = new Exercise
@@ -67,7 +87,14 @@ namespace MoabTests.Models.Helpers
             _existingExercises.Add(ex4);
         }
 
-        // Add Unit Tests here...
+        #endregion
+
+        #region Tests
+
+        /// <summary>
+        ///     Tests whether there are four exercises
+        /// </summary>
+        /// <tag status=Complete></tag>
         [Fact]
         public void HaveFourExercises()
         {
@@ -79,8 +106,11 @@ namespace MoabTests.Models.Helpers
             count.Should().Be(4);
         }
 
+        /// <summary>
+        ///     One of the four tests to see if the LineSplitting Function works
+        /// </summary>
+        /// <tag status=Complete></tag>
         [Fact]
-        // Checks whether the LineSplitting Function works
         public void LineSplitting1()
         {
             // Arrange
@@ -97,6 +127,10 @@ namespace MoabTests.Models.Helpers
             CSVInputex1.Should().Equals(ex1test);
         }
 
+        /// <summary>
+        ///     Another function to test if the Line Splitting function works
+        /// </summary>
+        /// <tag status=Complete></tag>
         [Fact]
         public void TestSplitting2()
         {
@@ -113,6 +147,10 @@ namespace MoabTests.Models.Helpers
             CSVInputex2.Should().Equals(ex2test);
         }
 
+        /// <summary>
+        ///     A third function to test if the line splitting function works
+        /// </summary>
+        /// <tag status=Complete></tag>
         [Fact]
         public void TestSplitting3()
         {
@@ -129,6 +167,10 @@ namespace MoabTests.Models.Helpers
             CSVInputex3.Should().Equals(ex3test);
         }
 
+        /// <summary>
+        ///     The fourth function to test is the line splitting function works
+        /// </summary>
+        /// <tag status=Complete></tag>
         [Fact]
         public void TestSplitting4()
         {
@@ -145,9 +187,12 @@ namespace MoabTests.Models.Helpers
             CSVInputex4.Should().Equals(ex4test);
         }
 
+        /// <summary>
+        ///     Tests whether the entire import function works
+        /// </summary>
+        /// <tag status=Complete></tag>
         [Fact]
-        // Checks whether the LineSplitting Function works
-        public void ImportTesting()
+        public void CSVImporttoListTesting()
         {
             // Arrange
             ExerciseImportHelper Import = new ExerciseImportHelper();
@@ -166,9 +211,19 @@ namespace MoabTests.Models.Helpers
                 AllExtest += '\n';
             }
             // Assert
-            CSVInputAllExercises.Should().Equals(AllExtest);
+            AllExtest.Should().Equals(CSVInputAllExercises);
         }
 
+        /// <summary>
+        /// Tests whether inner checkheader function works
+        ///     <paramref name="header">
+        ///         The possible header passed in
+        ///     </paramref>
+        ///     <paramref name="isValidExpected">
+        ///         The value expected to be returned
+        ///     </paramref>
+        ///     <tag status=Complete></tag>
+        /// </summary>
         [Theory]
         [InlineData("ExerciseCode,Name,CDT_Class,CDT_AtHome,IsMovementDataCollected,UnitTarget,HintEasier,HintHarder,Hint1,Hint2,MDT_Class,MDT_AtHome,OldCode,Name_animationFile,Old_Name_animationFile", true)]
         [InlineData("ExerciseCode,Name,CDT_Class,CDT_AtHome,IsMovementDataCollected,UnitTarget,HintEasier,HintHarder,Hint1,Hint2,MDT_Class,MDT_AtHome,OldCode,Name_animationFile,", false)]
@@ -178,7 +233,7 @@ namespace MoabTests.Models.Helpers
         [InlineData("ExerciseCode,name,CDT_Class,CDT_AtHome,IsMovementDataCollected,UnitTarget,HintEasier,HintHarder,Hint1,Hint2,MDT_Class,MDT_AtHome,OldCode,Name_animationFile,Old_Name_animationFile", true)]
         [InlineData("ExerciseCode,Name,CDT_Class,CDT_AtHome,IsMovementDataCollected,UnitTarget,HintEasier,HintHarder,Hint1,Hint2,MDT_Class,MDT_AtHome,OldCode,Name_animationFile,Old_Name_animationFile,xx,e,y", true)]
 
-        public void TestHeaderIsValid(string header, bool isValidExpected)
+        public void CheckHeaderTest(string header, bool isValidExpected)
         {
             // Arrange
 
@@ -189,5 +244,7 @@ namespace MoabTests.Models.Helpers
             // Assert
             result.Should().Be(isValidExpected);
         }
+
+        #endregion
     }
 }

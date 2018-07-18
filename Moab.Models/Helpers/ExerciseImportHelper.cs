@@ -8,6 +8,10 @@ using Nymbl.Models.POCO;
 
 namespace Moab.Models.Helpers
 {
+    /// <summary>
+    ///     Helps import a .csv file into a collection of exercises.
+    /// </summary>
+    /// <tag status=In-Progress/Compiles></tag>
     public class ExerciseImportHelper
     {
         enum ExerciseCSVColumns { ExerciseCode, Name, CDT_Class, CDT_AtHome,
@@ -17,15 +21,34 @@ namespace Moab.Models.Helpers
 
         #region Members
 
+        const int numberOfColumns = 14;
+
         #endregion
 
         #region Public Methods
 
+        /// <summary>
+        ///     Primary public function from this class.
+        ///     <paramref name="exercises">
+        ///         Existing collection of exercises (can be empty) to be
+        ///         updated or added to.
+        ///     </paramref>
+        ///     <paramref name="importCSV">
+        ///         String version of the .CSV file imported.
+        ///     </paramref>
+        ///     <return>
+        ///         Returns the update collection of exercises.
+        ///     </return>
+        ///     <tag status="In-Progress/Compiles"></tag>
+        /// </summary>
         public ICollection<Exercise> Import(string importCSV, ICollection<Exercise> exercises)
         {
             List<string[]> ImportList = SplitCSVInput(importCSV);
-            //TODO: add support in the SplitCSVInput method for checking header
-            IsHeaderValid(importCSV);
+            if (!IsHeaderValid(importCSV))
+            {
+                throw new FormatException("Header is in improper format.");
+            }
+
             foreach (string[] line in ImportList)
             {
                 Exercise exercise = FindExtantExerciseInCollection(exercises, line[0]);
@@ -43,36 +66,89 @@ namespace Moab.Models.Helpers
 
         #endregion
 
-        #region test code for private methods  **REMOVE FROM PRODUCTION CODE**
+        #region Debugging Code
+        #if DEBUG
 
+        /// <summary>
+        ///     Public Accessor for SplitCSVLine Function
+        ///     <paramref name="Line">
+        ///         The line inputted in the form of a string
+        ///         (see below to LineSplit function)
+        ///     </paramref>
+        ///     <return>
+        ///         Returns an array of strings made out of the line
+        ///     </return>
+        ///     <tag status=Complete></tag>
+        /// </summary>
         public string[] TestLineSplit(string Line)
         {
             return SplitCSVLine(Line);
         }
 
+        /// <summary>
+        ///     Public Accessor for SplitCSVInput Function
+        ///     <paramref name="input">
+        ///         The string based on the CSV file to be passed in
+        ///     </paramref>
+        ///     <return>
+        ///         A list of arrays of strings will be easy to work with
+        ///     </return>
+        ///     <tag status=Complete></tag>
+        /// </summary>
         public List<string[]> TestInputProcessing(string input)
         {
             return SplitCSVInput(input);
         }
 
+        /// <summary>
+        ///     Public Accessor for the IsHeaderValid Function
+        ///     <paramref name="header">
+        ///         The string based on the CSV file to be passed in
+        ///     </paramref>
+        ///     <return>
+        ///         a boolean that will be true if the header is formatted
+        ///         correctly and false if not.
+        ///     </return>
+        ///     <tag status=Complete></tag>
+        /// </summary>
         public bool TestIsHeaderValid(string header)
         {
             return IsHeaderValid(header);
         }
 
+#endif
         #endregion
 
         #region Private / Protected Methods
-        protected void IsHeaderValid(string CSVInput)
+
+        /// <summary>
+        ///     Checks if the Header of the CSV Input is in valid format
+        /// </summary>
+        /// <param name="CSVInput">
+        ///     The Input CSV File in the form of one string
+        /// </param>
+        /// <returns>
+        ///     Returns true if the header is in proper format, false otherwise
+        /// </returns>
+        /// <tag status=Complete></tag>
+        protected bool IsHeaderValid(string CSVInput)
         {
             string[] split = CSVInput.Split('\n');
-            bool Valid = CheckHeader(split[0]);
-            if (!Valid)
-            {
-                throw new FormatException("Header is in improper format.");
-            }
+            return CheckHeader(split[0]);
         }
 
+        /// <summary>
+        ///     Helper Function to IsHeaderValid
+        ///     Checks if the Header is actually valid after IsHeaderValid
+        ///         splits the input
+        /// </summary>
+        /// <param name="header">
+        ///     The Header of the file only
+        /// </param>
+        /// <returns>
+        ///     Returns true if header is valid, false if not
+        /// </returns>
+        /// <tag status="Complete"></tag>
         private bool CheckHeader(string header)
         {
             string checkHeader = "ExerciseCode,Name,CDT_Class,CDT_AtHome," +
@@ -98,6 +174,20 @@ namespace Moab.Models.Helpers
 
         }
 
+        /// <summary>
+        ///     Finds the exercise in the collection by code
+        /// </summary>
+        /// <param name="exercises">
+        ///     The collection of exercises inputted from other code
+        /// </param>
+        /// <param name="exerciseCode">
+        ///     The Code of the exercise that we're looking for
+        /// </param>
+        /// <returns>
+        ///     Returns the exercise that matches the code if it exists
+        ///     Returns null if not
+        /// </returns>
+        /// <tag status=NeedsTest></tag>
         protected Exercise FindExtantExerciseInCollection(
             ICollection<Exercise> exercises, string exerciseCode)
         {
@@ -111,6 +201,17 @@ namespace Moab.Models.Helpers
             return null;
         }
 
+        /// <summary>
+        ///     Updates the necessary parts of each exercise if it already exists
+        /// </summary>
+        /// <param name="exercise">
+        ///     The exercise object to be updated
+        /// </param>
+        /// <param name="updateCSV">
+        ///     The array of strings that corresponds to each exercise
+        /// </param>
+        /// <tag status=In-Progress/Compiles>Perhaps Requires Reference
+        /// Parameter</tag>
         protected void UpdateExercise(Exercise exercise, string[] updateCSV)
         {
             //TODO: add support for  generic hint collection
@@ -122,6 +223,17 @@ namespace Moab.Models.Helpers
             exercise.DateLastUpdated = DateTime.Now;
         }
 
+        /// <summary>
+        ///     Adds a new exercise to the collection of exercises
+        /// </summary>
+        /// <param name="exercises">
+        ///     The exercise object to be updated
+        /// </param>
+        /// <param name="newCSV">
+        ///     The array of strings that corresponds to each exercise
+        /// </param>
+        /// <tag status=In-Progress/Compiles>Perhaps Requires Reference
+        /// Parameter</tag>
         protected void AddNewExercise(ICollection<Exercise> exercises, string[] newCSV)
         {
             Exercise exercise = new Exercise();
@@ -129,30 +241,40 @@ namespace Moab.Models.Helpers
             exercises.Add(exercise);
         }
 
-        // Converts Y into true and N into false
-        // Helper function for UpdateExercise()
+        /// <summary>
+        ///     Converts "Y" or "y" into true and everything else into false
+        ///     Helper function for UpdateExercise()
+        ///     <paramref name="input">
+        ///         The input string (likely either Y or N)
+        ///     </paramref>
+        ///     <return>
+        ///         Returns true if "Y" or "y", false otherwise
+        ///     </return>
+        ///     <tag status=Complete></tag>
+        /// </summary>
         protected bool ConvertYNtoBool(string input)
         {
-            if (input.ToUpper() == "Y")
-            {
-                return true;
-            }
-            else if (input.ToUpper() == "N")
-            {
-                return false;
-            }
-            return false;
+            return (input.ToUpper() == "Y");
         }
 
-        // Converts the input string into a
+        /// <summary>
+        ///     Splits the CSV Input into a list of arrays of strings
+        ///     <paramref name="CSVInput">
+        ///         The string based on the CSV file to be passed in
+        ///     </paramref>
+        ///     <return>
+        ///         A list of arrays of strings will be easy to work with
+        ///     </return>
+        ///     <tag status=Complete></tag>
+        /// </summary>
         protected List<string[]> SplitCSVInput(string CSVInput)
         {
             // Create LineList
-            List<string[]> LineList = new List<string[]>();
+            var LineList = new List<string[]>();
             int iterator = 0;
             do
             {
-                string[] line = new string[14];
+                string[] line = new string[numberOfColumns];
                 int iteratorNext = CSVInput.IndexOf('\n', iterator);
                 string temp;
                 if (iteratorNext == -1)
@@ -181,15 +303,24 @@ namespace Moab.Models.Helpers
             return LineList;
         }
 
-        // Splits each line into an array of strings
-        // Helper function to SplitCSVInput
-        // TODO: Implementation for non-fixed number of hints
+        /// <summary>
+        ///     Splits each line into an array of strings
+        ///     Helper function to SplitCSVInput
+        ///     TODO: Implementation for non-fixed number of hints
+        ///     <paramref name="CSVLine">
+        ///         The line inputted in the form of a string
+        ///         (see below to LineSplit function)
+        ///     </paramref>
+        ///     <return>
+        ///         Returns an array of strings made out of the line
+        ///     </return>
+        ///     <tag status="In-Progress/Compiles"></tag>
+        /// </summary>
         private string[] SplitCSVLine(string CSVLine)
         {
-            int numberOfColumns = 14;
             string[] Line = new string[numberOfColumns];
             int iterator = 0;
-            for (int i = 0; i < 14; i++)
+            for (int i = 0; i < numberOfColumns; i++)
             {
                 if (CSVLine[iterator] == '\"')
                 {
