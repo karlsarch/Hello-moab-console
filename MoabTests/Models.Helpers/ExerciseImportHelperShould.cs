@@ -168,5 +168,23 @@ namespace MoabTests.Models.Helpers
             // Assert
             CSVInputAllExercises.Should().Equals(AllExtest);
         }
+
+        [Theory]
+        [InlineData("ExerciseCode,Name,CDT_Class,CDT_AtHome,IsMovementDataCollected,UnitTarget,HintEasier,HintHarder,Hint1,Hint2,MDT_Class,MDT_AtHome,OldCode,Name_animationFile,Old_Name_animationFile", true)]
+        [InlineData("ExerciseCode,Name,CDT_Class,CDT_AtHome,IsMovementDataCollected,UnitTarget,HintEasier,HintHarder,Hint1,Hint2,MDT_Class,MDT_AtHome,OldCode,Name_animationFile,", false)]
+        [InlineData("ExerciseCode,Name,CDT_Class,CDT_AtHome,IsMovementDataCollected,UnitTarget,HintEasier,HintHarder,Hint1,Hint2,MDT_Class,Old_Name_animationFile", false)]
+        [InlineData("ExerciseCode,Name,CDT_Class,IsMovementDataCollected,CDT_AtHome,UnitTarget,CDT_AtHome,HintEasier,HintHarder,Hint1,Hint2,MDT_Class,MDT_AtHome,OldCode,Name_animationFile,Old_Name_animationFile", false)]
+        [InlineData("ExerciseCode,Name,CDT_AtHome,CDT_Class,IsMovementDataCollected,UnitTarget,CDT_AtHome,HintEasier,HintHarder,Hint1,Hint2,MDT_Class,MDT_AtHome,OldCode,Name_animationFile,Old_Name_animationFile", false)]
+        public void TestHeaderIsValid(string header, bool isValidExpected)
+        {
+            // Arrange
+
+            ExerciseImportHelper HeaderTest = new ExerciseImportHelper();
+            // Act
+            var result = HeaderTest.TestIsHeaderValid(header);
+
+            // Assert
+            result.Should().Be(isValidExpected);
+        }
     }
 }

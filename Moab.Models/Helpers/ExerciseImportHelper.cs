@@ -25,7 +25,7 @@ namespace Moab.Models.Helpers
             //In my method UpdateExercise, I pass in a string array as the CSV file. This implies
             //that at some point we create a method that splits the lines of CSV into arrays.
             //However, we can't do this using the split method because of the commas in some hints.
-
+            List<string[]> ImportList = SplitCSVInput(importCSV);
 
 
             return false;
@@ -45,12 +45,17 @@ namespace Moab.Models.Helpers
             return SplitCSVInput(input);
         }
 
+        public bool TestIsHeaderValid(string header)
+        {
+            return IsHeaderValid(header);
+        }
+
         #endregion
 
         #region Private / Protected Methods
         protected bool IsHeaderValid(string header)
         {
-            string checkHeader = "ExerciseCode, Name, CDT_Class, CDT_AtHome, IsMovementDataCollected, UnitTarget, HintEasier, HintHarder, Hint1, Hint2, MDT_Class, MDT_AtHome, OldCode, Name_animationFile, Old_Name_animationFile";
+            string checkHeader = "ExerciseCode,Name,CDT_Class,CDT_AtHome,IsMovementDataCollected,UnitTarget,HintEasier,HintHarder,Hint1,Hint2,MDT_Class,MDT_AtHome,OldCode,Name_animationFile,Old_Name_animationFile";
             if (header == checkHeader)
             {
                 return true;
