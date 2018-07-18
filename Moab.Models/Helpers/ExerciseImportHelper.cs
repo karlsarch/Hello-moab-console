@@ -93,24 +93,37 @@ namespace Moab.Models.Helpers
             return false;
         }
 
-        //protected string[] SplitCSVInput(string CSVInput)
-        //{
+        // Converts the input string into a
+        protected List<string[]> SplitCSVInput(string CSVInput)
+        {
+            // Create LineList
+            List<string[]> LineList = new List<string[]>();
+            int iterator = 0;
+            while (CSVInput.Length > 0)
+            {
+                string[] line = new string[14];
+                int iteratorNext = CSVInput.IndexOf('\n', iterator);
+                string temp = CSVInput.Substring(iterator, iteratorNext - iterator);
+                line = SplitCSVLine(temp);
+                LineList.Add(line);
+                iterator = ++iteratorNext;
+            }
+            if (LineList.Count == 0)
+            {
+                throw new FormatException("Invalid Format of CSV Input");
+            }
 
-        //    List<string> LineList = new List<string>();
+            // Delete Header and Empty Row
+            LineList.RemoveRange(0, 2);
 
-        //    for (int i = 0; i < /*TODO*/; i++)
-        //    {
+            // Return edited list
+            return LineList;
+        }
 
-        //    }
-
-
-
-        //    return null;
-        //}
-
-        // Splits each line into an array of strings, usable later
+        // Splits each line into an array of strings
+        // Helper function to SplitCSVInput
         // TODO: Implementation for non-fixed number of hints
-        protected string[] SplitCSVLine(string CSVLine)
+        private string[] SplitCSVLine(string CSVLine)
         {
             string[] Line = new string[14];
             int iterator = 0;
@@ -125,8 +138,7 @@ namespace Moab.Models.Helpers
                     }
                     string temp = CSVLine.Substring(iterator, iteratorNext - iterator);
                     Line[i] = temp;
-                    iteratorNext += 2;
-                    iterator = iteratorNext;
+                    iterator = iteratorNext + 2;
                 }
                 else
                 {
@@ -137,8 +149,7 @@ namespace Moab.Models.Helpers
                     }
                     string temp = CSVLine.Substring(iterator, iteratorNext - iterator);
                     Line[i] = temp;
-                    iteratorNext++;
-                    iterator = iteratorNext;
+                    iterator = ++iteratorNext;
                 }
             }
             return Line;
