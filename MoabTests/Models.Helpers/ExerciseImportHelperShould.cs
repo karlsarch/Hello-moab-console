@@ -79,7 +79,7 @@ namespace MoabTests.Models.Helpers
 
         [Fact]
         // Checks whether the LineSplitting Function works
-        public void LineSplitting()
+        public void LineSplitting1()
         {
             // Arrange
             ExerciseImportHelper TestImport = new ExerciseImportHelper();
@@ -93,29 +93,55 @@ namespace MoabTests.Models.Helpers
             }
             string[] ex2Split = new string[14];
             ex1Split = TestImport.TestLineSplit(CSVInputex2);
+            // Assert
+            CSVInputex1.Should().Equals(ex1test);
+        }
+
+        [Fact]
+        public void TestSplitting2()
+        {
+            // Arrange
+            ExerciseImportHelper TestImport = new ExerciseImportHelper();
+            // Act
+            string[] ex2Split = new string[14];
             string ex2test = ex2Split[0] + ',';
             for (int i = 1; i < 14; i++)
             {
                 ex2test += (ex2Split[i] + ',');
             }
+            // Assert
+            CSVInputex2.Should().Equals(ex2test);
+        }
+
+        [Fact]
+        public void TestSplitting3()
+        {
+            // Arrange
+            ExerciseImportHelper TestImport = new ExerciseImportHelper();
+            // Act
             string[] ex3Split = new string[14];
-            ex1Split = TestImport.TestLineSplit(CSVInputex3);
             string ex3test = ex3Split[0] + ',';
             for (int i = 1; i < 14; i++)
             {
                 ex3test += (ex3Split[i] + ',');
             }
+            // Assert
+            CSVInputex3.Should().Equals(ex3test);
+        }
+
+        [Fact]
+        public void TestSplitting4()
+        {
+            // Arrange
+            ExerciseImportHelper TestImport = new ExerciseImportHelper();
+            // Act
             string[] ex4Split = new string[14];
-            ex1Split = TestImport.TestLineSplit(CSVInputex4);
             string ex4test = ex4Split[0] + ',';
             for (int i = 1; i < 14; i++)
             {
                 ex4test += (ex4Split[i] + ',');
             }
             // Assert
-            CSVInputex1.Should().Equals(ex1test);
-            CSVInputex2.Should().Equals(ex2test);
-            CSVInputex3.Should().Equals(ex3test);
             CSVInputex4.Should().Equals(ex4test);
         }
     }
