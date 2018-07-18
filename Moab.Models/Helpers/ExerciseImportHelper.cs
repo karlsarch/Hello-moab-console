@@ -104,15 +104,25 @@ namespace Moab.Models.Helpers
             // Create LineList
             List<string[]> LineList = new List<string[]>();
             int iterator = 0;
-            while (CSVInput.Length > 0)
+            do
             {
                 string[] line = new string[14];
                 int iteratorNext = CSVInput.IndexOf('\n', iterator);
-                string temp = CSVInput.Substring(iterator, iteratorNext - iterator);
+                string temp;
+                if (iteratorNext == -1)
+                {
+
+                    temp = CSVInput.Substring(iterator, CSVInput.Length - iterator);
+                }
+                else
+                {
+                    temp = CSVInput.Substring(iterator, iteratorNext - iterator);
+                }
                 line = SplitCSVLine(temp);
                 LineList.Add(line);
                 iterator = ++iteratorNext;
             }
+            while (iterator > 0);
             if (LineList.Count == 0)
             {
                 throw new FormatException("Invalid Format of CSV Input");
