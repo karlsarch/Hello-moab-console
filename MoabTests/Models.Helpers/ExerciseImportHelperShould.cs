@@ -18,10 +18,10 @@ namespace MoabTests.Models.Helpers
         string CSVInputex3 = "STAB_012_X,Standing weight shift,Don't move,Close your eyes,,,,,,,,,,,";
         string CSVInputex4 = "KSA_999_X,One Finger pull-up,Use two fingers,Pinky Finger,,,,,,,,,,,";
         string CSVInputAllExercises = "ExerciseCode,Name,CDT_Class,CDT_AtHome,IsMovementDataCollected,UnitTarget," +
-            "HintEasier,HintHarder,Hint1,Hint2,MDT_Class,MDT_AtHome,OldCode,Name_animationFile,Old_Name_animationFile\r\n" +
-            ",,,,,,,,,,,,,,\r\nFLX_003_L,Old Calf stretch Left,\"Easy, Partner\",As a diamond.,,,,,,,,,,, \r\n" +
-            "FLX_003_R,Old Calf stretch Right,\"Easy, Partner\",As a diamond.,,,,,,,,,,,\r\n" +
-            "STAB_012_X,Standing weight shift,Don't move,Close your eyes,,,,,,,,,,," +
+            "HintEasier,HintHarder,Hint1,Hint2,MDT_Class,MDT_AtHome,OldCode,Name_animationFile,Old_Name_animationFile\n" +
+            ",,,,,,,,,,,,,,\nFLX_003_L,Old Calf stretch Left,\"Easy, Partner\",As a diamond.,,,,,,,,,,, \n" +
+            "FLX_003_R,Old Calf stretch Right,\"Easy, Partner\",As a diamond.,,,,,,,,,,,\n" +
+            "STAB_012_X,Standing weight shift,Don't move,Close your eyes,,,,,,,,,,,\n" +
             "KSA_999_X,One Finger pull-up,Use two fingers,Pinky Finger,,,,,,,,,,,";
 
         /// <summary>
@@ -155,8 +155,8 @@ namespace MoabTests.Models.Helpers
             List<string[]> AllExList = new List<string[]>();
             AllExList = Import.TestInputProcessing(CSVInputAllExercises);
             string AllExtest = "ExerciseCode,Name,CDT_Class,CDT_AtHome,IsMovementDataCollected,UnitTarget," +
-            "HintEasier,HintHarder,Hint1,Hint2,MDT_Class,MDT_AtHome,OldCode,Name_animationFile,Old_Name_animationFile\r\n" +
-            ",,,,,,,,,,,,,,\r\n";
+            "HintEasier,HintHarder,Hint1,Hint2,MDT_Class,MDT_AtHome,OldCode,Name_animationFile,Old_Name_animationFile\n" +
+            ",,,,,,,,,,,,,,\n";
             for (int i = 1; i < AllExList.Count; i++)
             {
                 for (int j = 1; j < 14; j++)
@@ -165,8 +165,6 @@ namespace MoabTests.Models.Helpers
                 }
                 AllExtest += '\n';
             }
-            string[] ex2Split = new string[14];
-            ex1Split = TestImport.TestLineSplit(CSVInputex2);
             // Assert
             CSVInputAllExercises.Should().Equals(AllExtest);
         }
