@@ -133,6 +133,7 @@ namespace Moab.Models.Helpers
         /// <tag status=Complete></tag>
         protected bool IsHeaderValid(string CSVInput)
         {
+            CSVInput.Trim();
             string[] split = CSVInput.Split('\n');
             return CheckHeader(split[0]);
         }
@@ -149,23 +150,16 @@ namespace Moab.Models.Helpers
         ///     Returns true if header is valid, false if not
         /// </returns>
         /// <tag status="Complete"></tag>
-        private bool CheckHeader(string header)
+        private bool CheckHeader(ref string header)
         {
-            string checkHeader = "ExerciseCode,Name,CDT_Class,CDT_AtHome," +
+            const string checkHeader = "ExerciseCode,Name,CDT_Class,CDT_AtHome," +
                 "IsMovementDataCollected,UnitTarget,HintEasier,HintHarder," +
                 "Hint1,Hint2,MDT_Class,MDT_AtHome,OldCode," +
                 "Name_animationFile,Old_Name_animationFile";
             try
             {
                 string headerWeCare = header.Substring(0, checkHeader.Length);
-                if (headerWeCare.ToLower() == checkHeader.ToLower())
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
+                return headerWeCare.ToLower() == checkHeader.ToLower();
             }
             catch (ArgumentOutOfRangeException)
             {

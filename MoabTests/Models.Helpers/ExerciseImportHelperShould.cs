@@ -100,7 +100,7 @@ namespace MoabTests.Models.Helpers
         {
             // Arrange
             // Act
-            var count = _existingExercises.Count;
+            int count = _existingExercises.Count;
             // Assert
 
             count.Should().Be(4);
@@ -225,13 +225,32 @@ namespace MoabTests.Models.Helpers
         ///     <tag status=Complete></tag>
         /// </summary>
         [Theory]
-        [InlineData("ExerciseCode,Name,CDT_Class,CDT_AtHome,IsMovementDataCollected,UnitTarget,HintEasier,HintHarder,Hint1,Hint2,MDT_Class,MDT_AtHome,OldCode,Name_animationFile,Old_Name_animationFile", true)]
-        [InlineData("ExerciseCode,Name,CDT_Class,CDT_AtHome,IsMovementDataCollected,UnitTarget,HintEasier,HintHarder,Hint1,Hint2,MDT_Class,MDT_AtHome,OldCode,Name_animationFile,", false)]
-        [InlineData("ExerciseCode,Name,CDT_Class,CDT_AtHome,IsMovementDataCollected,UnitTarget,HintEasier,HintHarder,Hint1,Hint2,MDT_Class,Old_Name_animationFile", false)]
-        [InlineData("ExerciseCode,Name,CDT_Class,IsMovementDataCollected,CDT_AtHome,UnitTarget,CDT_AtHome,HintEasier,HintHarder,Hint1,Hint2,MDT_Class,MDT_AtHome,OldCode,Name_animationFile,Old_Name_animationFile", false)]
-        [InlineData("ExerciseCode,Name,CDT_AtHome,CDT_Class,IsMovementDataCollected,UnitTarget,CDT_AtHome,HintEasier,HintHarder,Hint1,Hint2,MDT_Class,MDT_AtHome,OldCode,Name_animationFile,Old_Name_animationFile", false)]
-        [InlineData("ExerciseCode,name,CDT_Class,CDT_AtHome,IsMovementDataCollected,UnitTarget,HintEasier,HintHarder,Hint1,Hint2,MDT_Class,MDT_AtHome,OldCode,Name_animationFile,Old_Name_animationFile", true)]
-        [InlineData("ExerciseCode,Name,CDT_Class,CDT_AtHome,IsMovementDataCollected,UnitTarget,HintEasier,HintHarder,Hint1,Hint2,MDT_Class,MDT_AtHome,OldCode,Name_animationFile,Old_Name_animationFile,xx,e,y", true)]
+        [InlineData("ExerciseCode,Name,CDT_Class,CDT_AtHome,IsMovementDataCo" +
+            "llected,UnitTarget,HintEasier,HintHarder,Hint1,Hint2,MDT_Class," +
+            "MDT_AtHome,OldCode,Name_animationFile," +
+            "Old_Name_animationFile", true)]
+        [InlineData("ExerciseCode,Name,CDT_Class,CDT_AtHome,IsMovementDataCo" +
+            "llected,UnitTarget,HintEasier,HintHarder,Hint1,Hint2,MDT_Class," +
+            "MDT_AtHome,OldCode,Name_animationFile,", false)]
+        [InlineData("ExerciseCode,Name,CDT_Class,CDT_AtHome,IsMovementDataCo" +
+            "llected,UnitTarget,HintEasier,HintHarder,Hint1,Hint2,MDT_Class," +
+            "Old_Name_animationFile", false)]
+        [InlineData("ExerciseCode,Name,CDT_Class,IsMovementDataCollected,CDT" +
+            "_AtHome,UnitTarget,CDT_AtHome,HintEasier,HintHarder,Hint1,Hint2" +
+            ",MDT_Class,MDT_AtHome,OldCode,Name_animationFile,Old_Name_anima" +
+            "tionFile", false)]
+        [InlineData("ExerciseCode,Name,CDT_AtHome,CDT_Class,IsMovementDataCo" +
+            "llected,UnitTarget,CDT_AtHome,HintEasier,HintHarder,Hint1,Hint2" +
+            ",MDT_Class,MDT_AtHome,OldCode,Name_animationFile,Old_Name_anima" +
+            "tionFile", false)]
+        [InlineData("ExerciseCode,name,CDT_Class,CDT_AtHome,IsMovementDataCo" +
+            "llected,UnitTarget,HintEasier,HintHarder,Hint1,Hint2,MDT_Class," +
+            "MDT_AtHome,OldCode,Name_animationFile," +
+            "Old_Name_animationFile", true)]
+        [InlineData("ExerciseCode,Name,CDT_Class,CDT_AtHome,IsMovementDataCo" +
+            "llected,UnitTarget,HintEasier,HintHarder,Hint1,Hint2,MDT_Class," +
+            "MDT_AtHome,OldCode,Name_animationFile,Old_Name_animationFile,xx" +
+            ",e,y", true)]
 
         public void CheckHeaderTest(string header, bool isValidExpected)
         {
