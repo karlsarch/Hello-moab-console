@@ -19,16 +19,23 @@ namespace Moab.Models.Helpers
 
         #region Public Methods
 
-        public bool Import(string importCSV, ICollection<Exercise> exercises)
+        public ICollection<Exercise> Import(string importCSV, ICollection<Exercise> exercises)
         {
-            // TODO: Write the implementation!!!!!
-            //In my method UpdateExercise, I pass in a string array as the CSV file. This implies
-            //that at some point we create a method that splits the lines of CSV into arrays.
-            //However, we can't do this using the split method because of the commas in some hints.
             List<string[]> ImportList = SplitCSVInput(importCSV);
-
-
-            return false;
+            //TODO: add support in the SplitCSVInput method for checking header
+            foreach (string[] line in ImportList)
+            {
+                Exercise exercise = FindExtantExerciseInCollection(exercises, line[0]);
+                if (exercise == null)
+                {
+                    AddNewExercise(exercises, line);
+                }
+                else
+                {
+                    UpdateExercise(exercise, line);
+                }
+            }
+            return exercises;
         }
 
         #endregion
@@ -89,7 +96,15 @@ namespace Moab.Models.Helpers
             exercise.DateLastUpdated = DateTime.Now;
         }
 
+        protected void AddNewExercise(ICollection<Exercise> exercises, string[] newCSV)
+        {
+            Exercise exercise = new Exercise();
+            UpdateExercise(exercise, newCSV);
+            exercises.Add(exercise);
+        }
+
         // Converts Y into true and N into false
+        // Helper function for UpdateExercise()
         protected bool ConvertYNtoBool(string input)
         {
             if (input.ToUpper() == "Y")
@@ -134,7 +149,7 @@ namespace Moab.Models.Helpers
             }
 
             // Delete Header and Empty Row
-            LineList.RemoveRange(0, 2);
+            LineList.RemoveRange(0, 2); //should this be (0,1) because we only want to delete the first two lines?
 
             // Return edited list
             return LineList;
@@ -145,7 +160,8 @@ namespace Moab.Models.Helpers
         // TODO: Implementation for non-fixed number of hints
         private string[] SplitCSVLine(string CSVLine)
         {
-            string[] Line = new string[14];
+            int numberOfColumns = 14;
+            string[] Line = new string[numberOfColumns]; 
             int iterator = 0;
             for (int i = 0; i < 14; i++)
             {
