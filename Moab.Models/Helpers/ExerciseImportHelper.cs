@@ -287,7 +287,7 @@ namespace Moab.Models.Helpers
                 iterator = ++iteratorNext;
             }
             while (iterator > 0);
-            if (LineList.Count == 0)
+            if (LineList.Count <= 1)
             {
                 throw new FormatException("Invalid Format of CSV Input");
             }
