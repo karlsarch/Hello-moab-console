@@ -51,14 +51,14 @@ namespace Moab.Models.Helpers
 
             foreach (string[] line in ImportList)
             {
-                Exercise exercise = FindExtantExerciseInCollection(ref exercises, line[0]);
+                Exercise exercise = FindExtantExerciseInCollection(exercises, line[0]);
                 if (exercise == null)
                 {
-                    AddNewExercise(ref exercises, line);
+                    AddNewExercise(exercises, line);
                 }
                 else
                 {
-                    UpdateExercise(ref exercise, line);
+                    UpdateExercise(exercise, line);
                 }
             }
             return exercises;
@@ -184,7 +184,7 @@ namespace Moab.Models.Helpers
         ///     Returns null if not
         /// </returns>
         /// <tag status=NeedsTest></tag>
-        protected Exercise FindExtantExerciseInCollection(ref
+        protected Exercise FindExtantExerciseInCollection(
             ICollection<Exercise> exercises, string exerciseCode)
         {
            foreach (Exercise exercise in exercises)
@@ -208,7 +208,7 @@ namespace Moab.Models.Helpers
         /// </param>
         /// <tag status=In-Progress/Compiles>Perhaps Requires Reference
         /// Parameter</tag>
-        protected void UpdateExercise(ref Exercise exercise, string[] updateCSV)
+        protected void UpdateExercise(Exercise exercise, string[] updateCSV)
         {
             //TODO: add support for  generic hint collection
             exercise.ExerciseCode = updateCSV[(int)ExerciseCSVColumns.ExerciseCode];
@@ -230,7 +230,7 @@ namespace Moab.Models.Helpers
         /// </param>
         /// <tag status=In-Progress/Compiles>Perhaps Requires Reference
         /// Parameter</tag>
-        protected void AddNewExercise(ref ICollection<Exercise> exercises, string[] newCSV)
+        protected void AddNewExercise(ICollection<Exercise> exercises, string[] newCSV)
         {
             Exercise exercise = new Exercise();
             UpdateExercise(ref exercise, newCSV);
