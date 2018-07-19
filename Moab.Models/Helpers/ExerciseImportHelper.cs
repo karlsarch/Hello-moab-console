@@ -66,6 +66,25 @@ namespace Moab.Models.Helpers
             return exercises;
         }
 
+        /// <summary>
+        ///     Exports a string in .csv form given a collection of exercises.
+        /// </summary>
+        /// <param name="exercises">
+        ///     The collection of exercises inputted
+        /// </param>
+        /// <returns>
+        ///     Returns a string that can be written directly to a .csv file
+        /// </returns>
+        /// <tag status="In-Progress/Does not Compile"></tag>
+        public string Export(ICollection<Exercise> exercises)
+        {
+            string ExportCSV = null;
+
+            //TODO: Implementation
+
+            return ExportCSV;
+        }
+
         #endregion
 
         #region Debugging Code
