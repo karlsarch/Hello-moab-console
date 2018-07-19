@@ -230,7 +230,6 @@ namespace Moab.Models.Helpers
         /// Parameter</tag>
         protected void UpdateExercise(Exercise exercise, string[] updateCSV)
         {
-            //TODO: add support for  generic hint collection
             exercise.ExerciseCode = updateCSV[(int)ExerciseCSVColumns.ExerciseCode];
             exercise.Name = updateCSV[(int)ExerciseCSVColumns.Name];
             exercise.EasierHint = updateCSV[(int)ExerciseCSVColumns.HintEasier];
