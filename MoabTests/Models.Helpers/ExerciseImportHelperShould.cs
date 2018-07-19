@@ -21,15 +21,15 @@ namespace MoabTests.Models.Helpers
         const string CSVInputex1 = "FLX_003_L,Old Calf stretch Left,\"Easy, " +
             "Partner\",As a diamond.,,,,,,,,,,,";
         string[] CSVLineex1 = { "FLX_003_L", "Old Calf Stretch Left",
-            "\"Easy, Partner\"", "As a diamond", "", "", "", "", "", "", "",
+            "Easy, Partner", "As a diamond", "", "", "", "", "", "", "",
             "", "", "" };
         const string CSVInputex2 = "FLX_003_R,Old Calf stretch Right,\"Easy," +
             " Partner\",As a diamond.,,,,,,,,,,,";
         string[] CSVLineex2 = { "FLX_003_R", "Old Calf Stretch Right",
-            "\"Easy, Partner\"", "As a diamond", "", "", "", "", "", "", "",
+            "Easy, Partner", "As a diamond", "", "", "", "", "", "", "",
             "", "", "" };
-        const string CSVInputex3 = "STAB_012_X,Standing weight shift,Don't m" +
-            "ove,Close your eyes,,,,,,,,,,,";
+        const string CSVInputex3 = "STAB_012_X,Standing weight shift,Don't move," +
+            "Close your eyes,,,,,,,,,,,";
         string[] CSVLineex3 = { "STAB_012_X", "Standing Weight Shift",
             "Don't Move", "Close your eyes", "", "", "", "", "", "", "",
             "", "", "" };
@@ -277,13 +277,16 @@ namespace MoabTests.Models.Helpers
         ///     <tag status=Complete></tag>
         /// </summary>
         [Theory]
+        //perfectly formatted header should work
         [InlineData("ExerciseCode,Name,CDT_Class,CDT_AtHome,IsMovementDataCo" +
             "llected,UnitTarget,HintEasier,HintHarder,Hint1,Hint2,MDT_Class," +
             "MDT_AtHome,OldCode,Name_animationFile," +
             "Old_Name_animationFile", true)]
+        //missing column at end should not work
         [InlineData("ExerciseCode,Name,CDT_Class,CDT_AtHome,IsMovementDataCo" +
             "llected,UnitTarget,HintEasier,HintHarder,Hint1,Hint2,MDT_Class," +
             "MDT_AtHome,OldCode,Name_animationFile,", false)]
+        //missing column in middle should not work
         [InlineData("ExerciseCode,Name,CDT_Class,CDT_AtHome,IsMovementDataCo" +
             "llected,UnitTarget,HintEasier,HintHarder,Hint1,Hint2,MDT_Class," +
             "Old_Name_animationFile", false)]
@@ -295,14 +298,26 @@ namespace MoabTests.Models.Helpers
             "llected,UnitTarget,CDT_AtHome,HintEasier,HintHarder,Hint1,Hint2" +
             ",MDT_Class,MDT_AtHome,OldCode,Name_animationFile,Old_Name_anima" +
             "tionFile", false)]
+        //testing if case affects result
         [InlineData("ExerciseCode,name,CDT_Class,CDT_AtHome,IsMovementDataCo" +
             "llected,UnitTarget,HintEasier,HintHarder,Hint1,Hint2,MDT_Class," +
             "MDT_AtHome,OldCode,Name_animationFile," +
             "Old_Name_animationFile", true)]
+        //testing if extra columns at the end affect result
         [InlineData("ExerciseCode,Name,CDT_Class,CDT_AtHome,IsMovementDataCo" +
             "llected,UnitTarget,HintEasier,HintHarder,Hint1,Hint2,MDT_Class," +
             "MDT_AtHome,OldCode,Name_animationFile,Old_Name_animationFile,xx" +
             ",e,y", true)]
+        //tests if spaces in the column names affect result
+        [InlineData("ExerciseCode,Name,CDT_Class,CDT_AtHome,IsMovementDataCo" +
+            "llected,UnitTarget,Hint Easier,Hint Harder,Hint1,Hint2,MDT_Class," +
+            "MDT_AtHome,OldCode,Name_animationFile," +
+            "Old_Name_animationFile", true)]
+        //testing if new column at beginning somehow succeeds
+        [InlineData("Object ID, ExerciseCode,Name,CDT_Class,CDT_AtHome,IsMovementDataCo" +
+            "llected,UnitTarget,HintEasier,HintHarder,Hint1,Hint2,MDT_Class," +
+            "MDT_AtHome,OldCode,Name_animationFile," +
+            "Old_Name_animationFile", false)]
 
         public void CheckHeaderTest(string header, bool isValidExpected)
         {
@@ -314,6 +329,28 @@ namespace MoabTests.Models.Helpers
 
             // Assert
             result.Should().Be(isValidExpected);
+        }
+
+        [Fact]
+        public void UpdateExisting()
+        {
+            // Arrange
+            var importer = new ExerciseImportHelper();
+            const string validHeader = "ExerciseCode,Name,CDT_Class,CDT_AtHome,IsMovementDataCo" +
+            "llected,UnitTarget,HintEasier,HintHarder,Hint1,Hint2,MDT_Class," +
+            "MDT_AtHome,OldCode,Name_animationFile," +
+            "Old_Name_animationFile";
+            string inputLine = "STAB_012_X,Standing weight shift,Y,Y,N,N,keep feet on floor," + 
+            "lift non-weight bearing foot off floor," + 
+            "Stand with your feet hip width apart and keep your legs straight as you shift weight from one foot to the other. ," + 
+            ",N,N,,STAB_012_X_StandingWeightShift,STAB_012 Standing Weight Shift";
+            string input = validHeader + Environment.NewLine + inputLine;
+            // Act
+            var result = importer.Import(input, _existingExercises);
+            // Assert
+            List<Exercise> resultList = result.ToList();
+            resultList[2].Name.Should().Be("TestName");
+            resultList.Count().Should().Be(4);
         }
 
         #endregion
