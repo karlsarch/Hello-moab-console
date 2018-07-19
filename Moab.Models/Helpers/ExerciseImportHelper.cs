@@ -309,17 +309,17 @@ namespace Moab.Models.Helpers
         /// <param name="updateCSV">
         ///     The processed CSV line that I am taking the hints from.
         /// </param>
-        /// <tag status="In-Progress/Does not Compile"></tag>
+        /// <tag status="In-Progress/Requires Testing"></tag>
         private void RefreshHints(Exercise exercise, string[] CSVLine)
         {
+            exercise.ExerciseHints.Clear();
             for (int i = 0; i < findnumhints(CSVLine); i++)
             {
                 var hint = new ExerciseHint();
                 hint.Id = exercise.Id;
-                if (exercise.ExerciseHints.Contains(CSVLine[(int)ExerciseCSVColumns.UnitTarget]))
-                {
-
-                }
+                hint.ExerciseID = exercise.Id; //Is this the right connection?
+                hint.Text = CSVLine[(int)ExerciseCSVColumns.Hint1 + i];
+                exercise.ExerciseHints.Add(hint);
             }
         }
 
