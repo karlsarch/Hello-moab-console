@@ -23,7 +23,7 @@ namespace Moab.Models.Helpers
             Hint2, MDT_Class, MDT_AtHome, OldCode, Name_animationFile,
             Old_Name_animationFile
         }
-        const int numberOfColumns = 14;
+        const int numNonHintColumns = 13;
 
         #endregion
 
@@ -78,7 +78,12 @@ namespace Moab.Models.Helpers
         /// <tag status="In-Progress/Compiles"></tag>
         public string Export(ICollection<Exercise> exercises)
         {
-            string ExportCSV = null;
+            int maxNumHints = 0;
+            foreach (Exercise i in exercises)
+            {
+                maxNumHints = findMaxNumHints(exercises);
+            }
+            string ExportCSV = createHeader(maxNumHints);
             foreach (Exercise i in exercises)
             {
                 ExportCSV += MakeCSVLine(i);
@@ -312,7 +317,6 @@ namespace Moab.Models.Helpers
             int iterator = 0;
             do
             {
-                string[] line = new string[numberOfColumns];
                 int iteratorNext = CSVInput.IndexOf('\n', iterator);
                 string temp;
                 if (iteratorNext == -1)
@@ -324,7 +328,7 @@ namespace Moab.Models.Helpers
                 {
                     temp = CSVInput.Substring(iterator, iteratorNext - iterator);
                 }
-                line = SplitCSVLine(temp);
+                string[] line = SplitCSVLine(temp);
                 LineList.Add(line);
                 iterator = ++iteratorNext;
             }
@@ -350,9 +354,92 @@ namespace Moab.Models.Helpers
             return LineList;
         }
 
+        /// <summary>
+        ///     Turns each exercise into a string that is the csv format of
+        ///     the exercise
+        /// </summary>
+        /// <param name="exercise">
+        ///     The exercise to be turned into a string
+        /// </param>
+        /// <returns>
+        ///     A string that is the .csv format of the exercise including
+        ///     the newline character
+        /// </returns>
+        /// <tag status=In-Progress/Compiles></tag>
         private string MakeCSVLine(Exercise exercise)
         {
-            throw new NotImplementedException();
+            string CSVLine = string.Empty;
+            CSVLine += exercise.ExerciseCode + ",";
+            CSVLine += exercise.Name + ",";
+            for (int i = 0; i < 3; i++) // for CDT_Class, CDT_AtHome, and IsMovementDataCollected
+            {
+                CSVLine += "Unknown,";
+            }
+            CSVLine += ConvertBooltoYN(exercise.HasRepetitionTarget) + ",";
+            CSVLine += exercise.EasierHint + ",";
+            CSVLine += exercise.HarderHint + ",";
+            //TODO: hint implementation
+
+            for (int i = 0; i < 5; i++) // for MDT_Class, MDT_AtHome, OldCode, Name_animationFile, and Old_Name_animationFile
+
+            {
+                CSVLine += "Unknown,";
+            }
+            CSVLine += Environment.NewLine;
+            return CSVLine;
+        }
+
+        /// <summary>
+        ///     Finds the maximum number of hints any exercise in the
+        ///     collection has
+        /// </summary>
+        /// <param name="exercises">
+        ///     The collection of exercises that we are checking the hints for
+        /// </param>
+        /// <returns>
+        ///     The maximum number of hints that any of the exercises in the
+        ///     collection has
+        /// </returns>
+        /// <tag status="Complete"></tag>
+        protected int findMaxNumHints(ICollection<Exercise> exercises)
+        {
+            int maxNum = 0;
+            foreach (Exercise ex in exercises)
+            {
+                int numHints = 0;
+                foreach (ExerciseHint hint in ex.ExerciseHints)
+                {
+                    numHints++;
+                }
+                if (numHints > maxNum)
+                {
+                    maxNum = numHints;
+                }
+            }
+            return maxNum;
+        }
+
+        /// <summary>
+        ///     Returns a string that is a valid header and emty line for the
+        ///     collection of exercises with the maximum number of hints
+        ///     passed in.
+        /// </summary>
+        /// <param name="maxNumHints">
+        ///     The maximum number of hints any exercise in this collection has
+        /// </param>
+        /// <returns>
+        ///     A string that is the header for a .CSV file
+        /// </returns>
+        /// <tag status="In-Progress/Does not Compile"></tag>
+        protected string createHeader(int maxNumHints)
+        {
+            string CSV = "ExerciseCode, Name, CDT_Class, CDT_AtHome, IsMov" +
+                "ementDataCollected, UnitTarget, HintEasier, HintHarder,";
+            for (int i = 1; i <= maxNumHints; i++)
+            {
+                CSV +=
+            }
+            return CSV;
         }
 
         #endregion
@@ -470,6 +557,25 @@ namespace Moab.Models.Helpers
                 line[i] = LineList[i];
             }
             return line;
+        }
+
+        /// <summary>
+        ///     Converts anything that is true to "Y" and false to "N"
+        /// </summary>
+        /// <param name="YN">
+        ///     Boolean to convert
+        /// </param>
+        /// <returns>
+        ///     "Y" if YN == true, false otherwise
+        /// </returns>
+        /// <tag status=Complete></tag>
+        private string ConvertBooltoYN(bool YN)
+        {
+            if (YN)
+            {
+                return "Y";
+            }
+            return "N";
         }
 
         #endregion
