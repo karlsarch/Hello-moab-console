@@ -118,6 +118,22 @@ namespace Moab.Models.Helpers
             return IsHeaderValid(header);
         }
 
+        /// <summary>
+        ///     Test code for FindNumHints function
+        /// </summary>
+        /// <param name="Line">
+        ///     String format of input (should be one line of the CSV)
+        /// </param>
+        /// <returns>
+        ///     Returns the number of hints in the line
+        /// </returns>
+        /// <tag status="Complete"></tag>
+        public int TestnumHints(string Line)
+        {
+            string[] LineSplit = SplitCSVLine(Line);
+            return findnumhints(LineSplit);
+        }
+
 #endif
         #endregion
 
@@ -337,7 +353,14 @@ namespace Moab.Models.Helpers
         private int findnumhints(string[] CSVLine)
         {
             const int numNonHintColumns = 13;
-            return CSVLine.Length - numNonHintColumns;
+            if (CSVLine.Length >= numNonHintColumns)
+            {
+                return CSVLine.Length - numNonHintColumns;
+            }
+            else
+            {
+                throw new FormatException("Invalid Format of CSV File");
+            }
         }
 
         /// <summary>

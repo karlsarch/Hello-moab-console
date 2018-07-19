@@ -75,6 +75,22 @@ namespace MoabTests.Models.Helpers
             "STAB_012_X,Standing weight shift,Don't move,Close your eyes,,,," +
             ",,,,,,,\nKSA_999_X,One Finger pull-up,Use two fingers,Pinky Fin" +
             "ger,,,,,,,,,,,";
+        const string numHintsInput1 = "InputHintNumTestExerciseCode,Name,CDT" +
+            "_Class,CDT_AtHome,IsMovementDataCollected,UnitTarget,HintEasier" +
+            ",HintHarder,Hint1,Hint2,MDT_Class,MDT_AtHome,OldCode,Name_anima" +
+            "tionFile,Old_Name_animationFile";
+        const string numHintsInput2 = "InputHintNumTestExerciseCode,Name,CDT" +
+            "_Class,CDT_AtHome,IsMovementDataCollected,UnitTarget,HintEasier" +
+            ",HintHarder,Hint1,Hint2,Hint3,Hint4,MDT_Class,MDT_AtHome,OldCode" +
+            ",Name_animationFile,Old_Name_animationFile";
+        const string numHintsInput3 = "InputHintNumTestExerciseCode,Name,CDT" +
+            "_Class,CDT_AtHome,IsMovementDataCollected,UnitTarget,HintEasier" +
+            ",HintHarder,MDT_Class,MDT_AtHome,OldCode,Name_anima" +
+            "tionFile,Old_Name_animationFile";
+        const string numHintsInput4 = "InputHintNumTestExerciseCode,Name,CDT" +
+            "_Class,CDT_AtHome,IsMovementDataCollected,UnitTarget,HintEasier" +
+            ",HintHarder,Hint1,Hint2,MDT_Class,MDT_AtHome,OldCode,Name_anima" +
+            "tionFile,Old_Name_animationFile";
 
         #endregion
 
@@ -263,6 +279,60 @@ namespace MoabTests.Models.Helpers
             // Act
             Action act = () => Import.TestInputProcessing(CSVListTest3);
             // Assert
+            act.Should().Throw<FormatException>();
+        }
+
+        /// <summary>
+        ///     Test the findNumHints function (test 1)
+        /// </summary>
+        /// <tag status="Complete"></tag>
+        [Fact]
+        public void NumHintsTest1()
+        {
+            //Arrange
+            var objectUnderTest = new ExerciseImportHelper();
+            //Act
+            //Assert
+            objectUnderTest.TestnumHints(numHintsInput1).Equals(2);
+        }
+        /// <summary>
+        ///     Test the findNumHints function (test 4)
+        /// </summary>
+        /// <tag status="Complete"></tag>
+        [Fact]
+        public void NumHintsTest2()
+        {
+            //Arrange
+            var objectUnderTest = new ExerciseImportHelper();
+            //Act
+            //Assert
+            objectUnderTest.TestnumHints(numHintsInput2).Equals(4);
+        }
+        /// <summary>
+        ///     Test the findNumHints function (test 4)
+        /// </summary>
+        /// <tag status="Complete"></tag>
+        [Fact]
+        public void NumHintsTest3()
+        {
+            //Arrange
+            var objectUnderTest = new ExerciseImportHelper();
+            //Act
+            //Assert
+            objectUnderTest.TestnumHints(numHintsInput3).Equals(0);
+        }
+        /// <summary>
+        ///     Test the findNumHints function (test 4)
+        /// </summary>
+        /// <tag stagus="Complete"></tag>
+        [Fact]
+        public void NumHintsTest4()
+        {
+            //Arrange
+            var objectUnderTest = new ExerciseImportHelper();
+            //Act
+            Action act = () => objectUnderTest.TestnumHints(numHintsInput2);
+            //Assert
             act.Should().Throw<FormatException>();
         }
 
