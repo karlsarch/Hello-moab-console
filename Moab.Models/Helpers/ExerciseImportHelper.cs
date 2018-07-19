@@ -51,14 +51,14 @@ namespace Moab.Models.Helpers
 
             foreach (string[] line in ImportList)
             {
-                Exercise exercise = FindExtantExerciseInCollection(exercises, line[0]);
+                Exercise exercise = FindExtantExerciseInCollection(ref exercises, line[0]);
                 if (exercise == null)
                 {
-                    AddNewExercise(exercises, line);
+                    AddNewExercise(ref exercises, line);
                 }
                 else
                 {
-                    UpdateExercise(exercise, line);
+                    UpdateExercise(ref exercise, line);
                 }
             }
             return exercises;
@@ -135,7 +135,7 @@ namespace Moab.Models.Helpers
         {
             CSVInput.Trim();
             string[] split = CSVInput.Split('\n');
-            return CheckHeader(split[0]);
+            return CheckHeader(ref split[0]);
         }
 
         /// <summary>
@@ -158,7 +158,9 @@ namespace Moab.Models.Helpers
                 "Name_animationFile,Old_Name_animationFile";
             try
             {
+                // Removes any unnecesary columns from the end of header
                 string headerWeCare = header.Substring(0, checkHeader.Length);
+                // Returns true if they are the same excluding case differences
                 return headerWeCare.ToLower() == checkHeader.ToLower();
             }
             catch (ArgumentOutOfRangeException)
@@ -182,7 +184,7 @@ namespace Moab.Models.Helpers
         ///     Returns null if not
         /// </returns>
         /// <tag status=NeedsTest></tag>
-        protected Exercise FindExtantExerciseInCollection(
+        protected Exercise FindExtantExerciseInCollection(ref
             ICollection<Exercise> exercises, string exerciseCode)
         {
            foreach (Exercise exercise in exercises)
@@ -206,7 +208,7 @@ namespace Moab.Models.Helpers
         /// </param>
         /// <tag status=In-Progress/Compiles>Perhaps Requires Reference
         /// Parameter</tag>
-        protected void UpdateExercise(Exercise exercise, string[] updateCSV)
+        protected void UpdateExercise(ref Exercise exercise, string[] updateCSV)
         {
             //TODO: add support for  generic hint collection
             exercise.ExerciseCode = updateCSV[(int)ExerciseCSVColumns.ExerciseCode];
@@ -228,10 +230,10 @@ namespace Moab.Models.Helpers
         /// </param>
         /// <tag status=In-Progress/Compiles>Perhaps Requires Reference
         /// Parameter</tag>
-        protected void AddNewExercise(ICollection<Exercise> exercises, string[] newCSV)
+        protected void AddNewExercise(ref ICollection<Exercise> exercises, string[] newCSV)
         {
             Exercise exercise = new Exercise();
-            UpdateExercise(exercise, newCSV);
+            UpdateExercise(ref exercise, newCSV);
             exercises.Add(exercise);
         }
 
@@ -291,7 +293,7 @@ namespace Moab.Models.Helpers
             }
 
             // Delete Header and Empty Row
-            LineList.RemoveRange(0, 2); //should this be (0,1) because we only want to delete the first two lines?
+            LineList.RemoveRange(0, 2);
 
             // Return edited list
             return LineList;
@@ -312,32 +314,35 @@ namespace Moab.Models.Helpers
         /// </summary>
         private string[] SplitCSVLine(string CSVLine)
         {
-            string[] Line = new string[numberOfColumns];
-            int iterator = 0;
-            for (int i = 0; i < numberOfColumns; i++)
+            char[] splitters = { ',', '\"' };
+            string[] temp = CSVLine.Split(splitters);
+            int j = 0;
+            foreach (string i in temp)
             {
-                if (CSVLine[iterator] == '\"')
+                i.Trim();
+                if (i != "")
                 {
-                    int iteratorNext = CSVLine.IndexOf('\"', iterator);
-                    if (iteratorNext == -1)
+                    if (i[0] == '\"')
                     {
-                        throw new FormatException("Invalid Format of CSV Input");
+                        temp[j] = temp[j] + temp[j + 1];
+                        temp[j + 1] = null;
                     }
-                    string temp = CSVLine.Substring(iterator, iteratorNext - iterator);
-                    Line[i] = temp;
-                    iterator = iteratorNext + 2;
+                    j++;
                 }
-                else
+
+            }
+            var LineList = new List<string>();
+            foreach (string i in temp)
+            {
+                if (!(i == null))
                 {
-                    int iteratorNext = CSVLine.IndexOf(',', iterator);
-                    if (iteratorNext == -1)
-                    {
-                        throw new FormatException("Invalid Format of CSV Input");
-                    }
-                    string temp = CSVLine.Substring(iterator, iteratorNext - iterator);
-                    Line[i] = temp;
-                    iterator = ++iteratorNext;
+                    LineList.Add(i);
                 }
+            }
+            var Line = new string[LineList.Count];
+            for (int i = 0; i <LineList.Count; i++)
+            {
+                Line[i] = LineList[i];
             }
             return Line;
         }

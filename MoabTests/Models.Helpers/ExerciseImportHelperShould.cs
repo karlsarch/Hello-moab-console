@@ -20,12 +20,24 @@ namespace MoabTests.Models.Helpers
         public ICollection<Exercise> _existingExercises = new HashSet<Exercise>();
         const string CSVInputex1 = "FLX_003_L,Old Calf stretch Left,\"Easy, " +
             "Partner\",As a diamond.,,,,,,,,,,,";
+        string[] CSVLineex1 = { "FLX_003_L", "Old Calf Stretch Left",
+            "\"Easy, Partner\"", "As a diamond", "", "", "", "", "", "", "",
+            "", "", "" };
         const string CSVInputex2 = "FLX_003_R,Old Calf stretch Right,\"Easy," +
             " Partner\",As a diamond.,,,,,,,,,,,";
+        string[] CSVLineex2 = { "FLX_003_R", "Old Calf Stretch Right",
+            "\"Easy, Partner\"", "As a diamond", "", "", "", "", "", "", "",
+            "", "", "" };
         const string CSVInputex3 = "STAB_012_X,Standing weight shift,Don't m" +
             "ove,Close your eyes,,,,,,,,,,,";
+        string[] CSVLineex3 = { "STAB_012_X", "Standing Weight Shift",
+            "Don't Move", "Close your eyes", "", "", "", "", "", "", "",
+            "", "", "" };
         const string CSVInputex4 = "KSA_999_X,One Finger pull-up,Use two fin" +
             "gers,Pinky Finger,,,,,,,,,,,";
+        string[] CSVLineex4 = { "KSA_999_X", "One Finger pull-up",
+            "Use Two Fingers", "Pinky Finger", "", "", "", "", "", "", "",
+            "", "", "" };
         const string CSVInputAllExercises = "ExerciseCode,Name,CDT_Class,CDT" +
             "_AtHome,IsMovementDataCollected,UnitTarget," +
             "HintEasier,HintHarder,Hint1,Hint2,MDT_Class,MDT_AtHome,OldCode," +
@@ -115,16 +127,11 @@ namespace MoabTests.Models.Helpers
         {
             // Arrange
             ExerciseImportHelper TestImport = new ExerciseImportHelper();
-            // Act
             string[] ex1Split = new string[14];
+            // Act
             ex1Split = TestImport.TestLineSplit(CSVInputex1);
-            string ex1test = ex1Split[0] + ',';
-            for (int i = 1; i < 14; i++)
-            {
-                ex1test += (ex1Split[i] + ',');
-            }
             // Assert
-            CSVInputex1.Should().Equals(ex1test);
+            ex1Split.Should().Equals(CSVLineex1);
         }
 
         /// <summary>
@@ -136,15 +143,11 @@ namespace MoabTests.Models.Helpers
         {
             // Arrange
             ExerciseImportHelper TestImport = new ExerciseImportHelper();
-            // Act
             string[] ex2Split = new string[14];
-            string ex2test = ex2Split[0] + ',';
-            for (int i = 1; i < 14; i++)
-            {
-                ex2test += (ex2Split[i] + ',');
-            }
+            // Act
+            ex2Split = TestImport.TestLineSplit(CSVInputex2);
             // Assert
-            CSVInputex2.Should().Equals(ex2test);
+            ex2Split.Should().Equals(CSVLineex2);
         }
 
         /// <summary>
@@ -156,15 +159,11 @@ namespace MoabTests.Models.Helpers
         {
             // Arrange
             ExerciseImportHelper TestImport = new ExerciseImportHelper();
-            // Act
             string[] ex3Split = new string[14];
-            string ex3test = ex3Split[0] + ',';
-            for (int i = 1; i < 14; i++)
-            {
-                ex3test += (ex3Split[i] + ',');
-            }
+            // Act
+            ex3Split = TestImport.TestLineSplit(CSVInputex3);
             // Assert
-            CSVInputex3.Should().Equals(ex3test);
+            ex3Split.Should().Equals(CSVLineex3);
         }
 
         /// <summary>
@@ -176,15 +175,11 @@ namespace MoabTests.Models.Helpers
         {
             // Arrange
             ExerciseImportHelper TestImport = new ExerciseImportHelper();
-            // Act
             string[] ex4Split = new string[14];
-            string ex4test = ex4Split[0] + ',';
-            for (int i = 1; i < 14; i++)
-            {
-                ex4test += (ex4Split[i] + ',');
-            }
+            // Act
+            ex4Split = TestImport.TestLineSplit(CSVInputex4);
             // Assert
-            CSVInputex4.Should().Equals(ex4test);
+            ex4Split.Should().Equals(CSVLineex4);
         }
 
         /// <summary>
@@ -211,7 +206,7 @@ namespace MoabTests.Models.Helpers
                 AllExtest += '\n';
             }
             // Assert
-            AllExtest.Should().Equals(CSVInputAllExercises);
+            CSVInputAllExercises.Should().Equals(AllExtest);
         }
 
         /// <summary>
