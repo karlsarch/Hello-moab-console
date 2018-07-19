@@ -14,13 +14,15 @@ namespace Moab.Models.Helpers
     /// <tag status=In-Progress/Compiles></tag>
     public class ExerciseImportHelper
     {
-        enum ExerciseCSVColumns { ExerciseCode, Name, CDT_Class, CDT_AtHome,
-            IsMovementDataCollected, UnitTarget, HintEasier, HintHarder, Hint1,
-            Hint2, MDT_Class, MDT_AtHome, OldCode, Name_animationFile,
-            Old_Name_animationFile }
-
         #region Members
 
+        enum ExerciseCSVColumns
+        {
+            ExerciseCode, Name, CDT_Class, CDT_AtHome,
+            IsMovementDataCollected, UnitTarget, HintEasier, HintHarder, Hint1,
+            Hint2, MDT_Class, MDT_AtHome, OldCode, Name_animationFile,
+            Old_Name_animationFile
+        }
         const int numberOfColumns = 14;
 
         #endregion
@@ -119,7 +121,7 @@ namespace Moab.Models.Helpers
 #endif
         #endregion
 
-        #region Private / Protected Methods
+        #region Protected Methods
 
         /// <summary>
         ///     Checks if the Header of the CSV Input is in valid format
@@ -217,6 +219,7 @@ namespace Moab.Models.Helpers
             exercise.HarderHint = updateCSV[(int)ExerciseCSVColumns.HintHarder];
             exercise.HasRepetitionTarget = ConvertYNtoBool(updateCSV[(int)ExerciseCSVColumns.UnitTarget]);
             exercise.DateLastUpdated = DateTime.Now;
+            RefreshHints(exercise, updateCSV);
         }
 
         /// <summary>
@@ -232,25 +235,9 @@ namespace Moab.Models.Helpers
         /// Parameter</tag>
         protected void AddNewExercise(ICollection<Exercise> exercises, string[] newCSV)
         {
-            Exercise exercise = new Exercise();
+            var exercise = new Exercise();
             UpdateExercise(exercise, newCSV);
             exercises.Add(exercise);
-        }
-
-        /// <summary>
-        ///     Converts "Y" or "y" into true and everything else into false
-        ///     Helper function for UpdateExercise()
-        ///     <paramref name="input">
-        ///         The input string (likely either Y or N)
-        ///     </paramref>
-        ///     <return>
-        ///         Returns true if "Y" or "y", false otherwise
-        ///     </return>
-        ///     <tag status=Complete></tag>
-        /// </summary>
-        protected bool ConvertYNtoBool(string input)
-        {
-            return (input.ToUpper() == "Y");
         }
 
         /// <summary>
@@ -306,6 +293,42 @@ namespace Moab.Models.Helpers
 
             // Return edited list
             return LineList;
+        }
+
+        #endregion
+
+        #region Private Methods
+
+        /// <summary>
+        ///     Refreshes the hints to the exercise.  Helper function to
+        ///     UpdateExercise.
+        /// </summary>
+        /// <param name="exercise">
+        ///     The exercise passed in that I am to refresh the hints for.
+        /// </param>
+        /// <param name="updateCSV">
+        ///     The processed CSV line that I am taking the hints from.
+        /// </param>
+        /// <tag status="In-Progress/Does not Compile"></tag>
+        private void RefreshHints(Exercise exercise, string[] updateCSV)
+        {
+            //TODO: Implementation
+        }
+
+        /// <summary>
+        ///     Converts "Y" or "y" into true and everything else into false
+        ///     Helper function for UpdateExercise()
+        ///     <paramref name="input">
+        ///         The input string (likely either Y or N)
+        ///     </paramref>
+        ///     <return>
+        ///         Returns true if "Y" or "y", false otherwise
+        ///     </return>
+        ///     <tag status=Complete></tag>
+        /// </summary>
+        private bool ConvertYNtoBool(string input)
+        {
+            return (input.ToUpper() == "Y");
         }
 
         /// <summary>
