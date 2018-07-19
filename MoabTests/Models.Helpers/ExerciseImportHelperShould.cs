@@ -191,12 +191,15 @@ namespace MoabTests.Models.Helpers
         {
             // Arrange
             ExerciseImportHelper Import = new ExerciseImportHelper();
-            // Act
+            string AllExtest = "ExerciseCode,Name,CDT_Class,CDT_AtHome,IsMo" +
+                "vementDataCollected,UnitTarget," +
+                "HintEasier,HintHarder,Hint1,Hint2,MDT_Class,MDT_AtHome,OldC" +
+                "ode,Name_animationFile,Old_Name_animationFile\n" +
+                ",,,,,,,,,,,,,,\n";
             List<string[]> AllExList = new List<string[]>();
+            // Act
             AllExList = Import.TestInputProcessing(CSVInputAllExercises);
-            string AllExtest = "ExerciseCode,Name,CDT_Class,CDT_AtHome,IsMovementDataCollected,UnitTarget," +
-            "HintEasier,HintHarder,Hint1,Hint2,MDT_Class,MDT_AtHome,OldCode,Name_animationFile,Old_Name_animationFile\n" +
-            ",,,,,,,,,,,,,,\n";
+            // Arrange Some More
             for (int i = 1; i < AllExList.Count; i++)
             {
                 for (int j = 1; j < 14; j++)

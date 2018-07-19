@@ -292,8 +292,17 @@ namespace Moab.Models.Helpers
                 throw new FormatException("Invalid Format of CSV Input");
             }
 
-            // Delete Header and Empty Row
-            LineList.RemoveRange(0, 2);
+            // Delete Header
+            LineList.RemoveAt(0);
+
+            // Delete Each Empty Row
+            for (int i = 0; i < LineList.Count; i++)
+            {
+                if (LineList[i][0] == "")
+                {
+                    LineList.RemoveAt(i);
+                }
+            }
 
             // Return edited list
             return LineList;
@@ -339,12 +348,12 @@ namespace Moab.Models.Helpers
                     LineList.Add(i);
                 }
             }
-            var Line = new string[LineList.Count];
+            var line = new string[LineList.Count];
             for (int i = 0; i <LineList.Count; i++)
             {
-                Line[i] = LineList[i];
+                line[i] = LineList[i];
             }
-            return Line;
+            return line;
         }
 
         #endregion
