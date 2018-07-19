@@ -38,7 +38,40 @@ namespace MoabTests.Models.Helpers
         string[] CSVLineex4 = { "KSA_999_X", "One Finger pull-up",
             "Use Two Fingers", "Pinky Finger", "", "", "", "", "", "", "",
             "", "", "" };
-        const string CSVInputAllExercises = "ExerciseCode,Name,CDT_Class,CDT" +
+        const string CSVListTest1 = "ExerciseCode,Name,CDT_Class,CDT" +
+            "_AtHome,IsMovementDataCollected,UnitTarget," +
+            "HintEasier,HintHarder,Hint1,Hint2,MDT_Class,MDT_AtHome,OldCode," +
+            "Name_animationFile,Old_Name_animationFile\n" +
+            ",,,,,,,,,,,,,,\nFLX_003_L,Old Calf stretch Left,\"Easy, Partner" +
+            "\",As a diamond.,,,,,,,,,,, \n" +
+            "FLX_003_R,Old Calf stretch Right,\"Easy, Partner\",As a diamond" +
+            ".,,,,,,,,,,,\n" +
+            "STAB_012_X,Standing weight shift,Don't move,Close your eyes,,,," +
+            ",,,,,,,\nKSA_999_X,One Finger pull-up,Use two fingers,Pinky Fin" +
+            "ger,,,,,,,,,,,";
+        const string CSVListTest2 = "ExerciseCode,Name,CDT_Class,CDT" +
+            "_AtHome,IsMovementDataCollected,UnitTarget," +
+            "HintEasier,HintHarder,Hint1,Hint2,MDT_Class,MDT_AtHome,OldCode," +
+            "Name_animationFile,Old_Name_animationFile\n" +
+            ",,,,,,,,,,,,,,\nFLX_003_L,Old Calf stretch Left,\"Easy, Partner" +
+            "\",As a diamond.,,,,,,,,,,, \n,,,,,,,,,,,,,,\n" +
+            "FLX_003_R,Old Calf stretch Right,\"Easy, Partner\",As a diamond" +
+            ".,,,,,,,,,,,\n,,,,,,,,,,,,,,\n" +
+            "STAB_012_X,Standing weight shift,Don't move,Close your eyes,,,," +
+            ",,,,,,,\nKSA_999_X,One Finger pull-up,Use two fingers,Pinky Fin" +
+            "ger,,,,,,,,,,,";
+        const string CSVListTest3 = "ExerciseCode,Name,CDT_Class,CDT" +
+            "_AtHome,IsMovementDataCollected,UnitTarget," +
+            "HintEasier,HintHarder,Hint1,Hint2,MDT_Class,MDT_AtHome,OldCode," +
+            "Name_animationFile,Old_Name_animationFile\n" +
+            ",,,,,,,,,,,,,,\nFLX_003_L,Old Calf stretch Left,\"Easy, Partner" +
+            "\",As a diamond.,,,,,,,,,,, \n" +
+            "FLX_003_R,Old Calf stretch Right,\"Easy, Partner\",As a diamond" +
+            ".,,,,,,,,,,,\n" +
+            "STAB_012_X,Standing weight shift,Don't move,Close your eyes,,,," +
+            ",,,,,,,\nKSA_999_X,One Finger pull-up,Use two fingers,Pinky Fin" +
+            "ger,,,,,,,,,,,";
+        const string CSVListTest4 = "ExerciseCode,Name,CDT_Class,CDT" +
             "_AtHome,IsMovementDataCollected,UnitTarget," +
             "HintEasier,HintHarder,Hint1,Hint2,MDT_Class,MDT_AtHome,OldCode," +
             "Name_animationFile,Old_Name_animationFile\n" +
@@ -183,33 +216,87 @@ namespace MoabTests.Models.Helpers
         }
 
         /// <summary>
-        ///     Tests whether the entire import function works
+        ///     Tests whether the import function works (Test 1)
         /// </summary>
         /// <tag status=Complete></tag>
         [Fact]
-        public void CSVImporttoListTesting()
+        public void CSVImporttoListTesting1()
         {
             // Arrange
-            ExerciseImportHelper Import = new ExerciseImportHelper();
-            string AllExtest = "ExerciseCode,Name,CDT_Class,CDT_AtHome,IsMo" +
-                "vementDataCollected,UnitTarget," +
-                "HintEasier,HintHarder,Hint1,Hint2,MDT_Class,MDT_AtHome,OldC" +
-                "ode,Name_animationFile,Old_Name_animationFile\n" +
-                ",,,,,,,,,,,,,,\n";
-            List<string[]> AllExList = new List<string[]>();
+            var Import = new ExerciseImportHelper();
+            var AllExList = new List<string[]>();
+            var ResultList = new List<string[]>();
+            ResultList.Add(CSVLineex1);
+            ResultList.Add(CSVLineex2);
+            ResultList.Add(CSVLineex3);
+            ResultList.Add(CSVLineex4);
             // Act
-            AllExList = Import.TestInputProcessing(CSVInputAllExercises);
-            // Arrange Some More
-            for (int i = 1; i < AllExList.Count; i++)
-            {
-                for (int j = 1; j < 14; j++)
-                {
-                    AllExtest += (AllExList[i][j] + ',');
-                }
-                AllExtest += '\n';
-            }
+            AllExList = Import.TestInputProcessing(CSVListTest1);
             // Assert
-            CSVInputAllExercises.Should().Equals(AllExtest);
+            AllExList.Should().Equals(ResultList);
+        }
+
+        /// <summary>
+        ///     Tests whether the import function will ignore blank lines (test 2)
+        /// </summary>
+        /// <tag status=Complete</tag>
+        [Fact]
+        public void CSVImporttoListTesting2()
+        {
+            // Arrange
+            var Import = new ExerciseImportHelper();
+            var AllExList = new List<string[]>();
+            var ResultList = new List<string[]>();
+            ResultList.Add(CSVLineex1);
+            ResultList.Add(CSVLineex2);
+            ResultList.Add(CSVLineex3);
+            ResultList.Add(CSVLineex4);
+            // Act
+            AllExList = Import.TestInputProcessing(CSVListTest2);
+            // Assert
+            AllExList.Should().Equals(ResultList);
+        }
+
+        /// <summary>
+        ///     Tests whether the import function works (Test 3)
+        /// </summary>
+        /// <tag status=In-Progress/Compiles></tag>
+        [Fact]
+        public void CSVImporttoListTesting3()
+        {
+            // Arrange
+            var Import = new ExerciseImportHelper();
+            var AllExList = new List<string[]>();
+            var ResultList = new List<string[]>();
+            ResultList.Add(CSVLineex1);
+            ResultList.Add(CSVLineex2);
+            ResultList.Add(CSVLineex3);
+            ResultList.Add(CSVLineex4);
+            // Act
+            AllExList = Import.TestInputProcessing(CSVListTest3);
+            // Assert
+            AllExList.Should().Equals(ResultList);
+        }
+
+        /// <summary>
+        ///     Tests whether the import function works (Test 4)
+        /// </summary>
+        /// <tag status=In-Progress/Compiles></tag>
+        [Fact]
+        public void CSVImporttoListTesting4()
+        {
+            // Arrange
+            var Import = new ExerciseImportHelper();
+            var AllExList = new List<string[]>();
+            var ResultList = new List<string[]>();
+            ResultList.Add(CSVLineex1);
+            ResultList.Add(CSVLineex2);
+            ResultList.Add(CSVLineex3);
+            ResultList.Add(CSVLineex4);
+            // Act
+            AllExList = Import.TestInputProcessing(CSVListTest4);
+            // Assert
+            AllExList.Should().Equals(ResultList);
         }
 
         /// <summary>

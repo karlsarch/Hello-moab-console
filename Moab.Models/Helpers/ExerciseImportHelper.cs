@@ -233,7 +233,7 @@ namespace Moab.Models.Helpers
         protected void AddNewExercise(ICollection<Exercise> exercises, string[] newCSV)
         {
             Exercise exercise = new Exercise();
-            UpdateExercise(ref exercise, newCSV);
+            UpdateExercise(exercise, newCSV);
             exercises.Add(exercise);
         }
 
