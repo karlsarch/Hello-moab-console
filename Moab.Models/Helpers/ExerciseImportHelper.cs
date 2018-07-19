@@ -200,6 +200,24 @@ namespace Moab.Models.Helpers
         }
 
         /// <summary>
+        ///     Adds a new exercise to the collection of exercises
+        /// </summary>
+        /// <param name="exercises">
+        ///     The exercise object to be updated
+        /// </param>
+        /// <param name="newCSV">
+        ///     The array of strings that corresponds to each exercise
+        /// </param>
+        /// <tag status=In-Progress/Compiles>Perhaps Requires Reference
+        /// Parameter</tag>
+        protected void AddNewExercise(ICollection<Exercise> exercises, string[] newCSV)
+        {
+            var exercise = new Exercise();
+            UpdateExercise(exercise, newCSV);
+            exercises.Add(exercise);
+        }
+
+        /// <summary>
         ///     Updates the necessary parts of each exercise if it already exists
         /// </summary>
         /// <param name="exercise">
@@ -220,24 +238,6 @@ namespace Moab.Models.Helpers
             exercise.HasRepetitionTarget = ConvertYNtoBool(updateCSV[(int)ExerciseCSVColumns.UnitTarget]);
             exercise.DateLastUpdated = DateTime.Now;
             RefreshHints(exercise, updateCSV);
-        }
-
-        /// <summary>
-        ///     Adds a new exercise to the collection of exercises
-        /// </summary>
-        /// <param name="exercises">
-        ///     The exercise object to be updated
-        /// </param>
-        /// <param name="newCSV">
-        ///     The array of strings that corresponds to each exercise
-        /// </param>
-        /// <tag status=In-Progress/Compiles>Perhaps Requires Reference
-        /// Parameter</tag>
-        protected void AddNewExercise(ICollection<Exercise> exercises, string[] newCSV)
-        {
-            var exercise = new Exercise();
-            UpdateExercise(exercise, newCSV);
-            exercises.Add(exercise);
         }
 
         /// <summary>
@@ -310,9 +310,35 @@ namespace Moab.Models.Helpers
         ///     The processed CSV line that I am taking the hints from.
         /// </param>
         /// <tag status="In-Progress/Does not Compile"></tag>
-        private void RefreshHints(Exercise exercise, string[] updateCSV)
+        private void RefreshHints(Exercise exercise, string[] CSVLine)
         {
-            //TODO: Implementation
+            for (int i = 0; i < findnumhints(CSVLine); i++)
+            {
+                var hint = new ExerciseHint();
+                hint.Id = exercise.Id;
+                if (exercise.ExerciseHints.Contains(CSVLine[(int)ExerciseCSVColumns.UnitTarget]))
+                {
+
+                }
+            }
+        }
+
+        /// <summary>
+        ///     Finds the number of hints (not including easierhint or
+        ///     harderhint) in the CSVLine
+        /// </summary>
+        /// <param name="CSVLine">
+        ///     The input string array
+        /// </param>
+        /// <returns>
+        ///     Returns the number of hints (not including easierhint or
+        ///     harderhint) in the string array
+        /// </returns>
+        /// <tag status="In-Progress/Requires Testing"></tag>
+        private int findnumhints(string[] CSVLine)
+        {
+            const int numNonHintColumns = 13;
+            return CSVLine.Length - numNonHintColumns;
         }
 
         /// <summary>
