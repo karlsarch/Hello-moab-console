@@ -134,6 +134,26 @@ namespace Moab.Models.Helpers
             return findnumhints(LineSplit);
         }
 
+        /// <summary>
+        ///     Test code for the RefreshHint function.
+        /// </summary>
+        /// <param name="Line">
+        ///     The CSV string that is input
+        /// </param>
+        /// <param name="exercise">
+        ///     The exercise passed in to get its hints refreshed
+        /// </param>
+        /// <returns>
+        ///     Returns the exercise with its hints refreshed from line
+        /// </returns>
+        /// <tag status=Complete></tag>
+        public Exercise TestHints(Exercise exercise, string Line)
+        {
+            string[] LineSplit = SplitCSVLine(Line);
+            RefreshHints(exercise, LineSplit);
+            return exercise;
+        }
+
 #endif
         #endregion
 

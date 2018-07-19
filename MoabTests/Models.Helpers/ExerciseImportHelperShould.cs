@@ -19,12 +19,13 @@ namespace MoabTests.Models.Helpers
 
         public ICollection<Exercise> _existingExercises = new HashSet<Exercise>();
         const string CSVInputex1 = "FLX_003_L,Old Calf stretch Left,\"Easy, " +
-            "Partner\",As a diamond.,,,,,,,,,,,";
+            "Partner\",As a diamond.,Knees Stright,Heels on the floor,,,,,,,,,";
         string[] CSVLineex1 = { "FLX_003_L", "Old Calf Stretch Left",
             "\"Easy, Partner\"", "As a diamond", "", "", "", "", "", "", "",
             "", "", "" };
-        const string CSVInputex2 = "FLX_003_R,Old Calf stretch Right,\"Easy," +
-            " Partner\",As a diamond.,,,,,,,,,,,";
+        const string CSVInputex2 = "FLX_003_R,Old Calf stretch Right,\"Easy, " +
+            "Partner\",As a diamond.,Knees Stright,Heels on the floor,Lean " +
+            "forward!,,,,,,,,";
         string[] CSVLineex2 = { "FLX_003_R", "Old Calf Stretch Right",
             "\"Easy, Partner\"", "As a diamond", "", "", "", "", "", "", "",
             "", "", "" };
@@ -334,6 +335,87 @@ namespace MoabTests.Models.Helpers
             Action act = () => objectUnderTest.TestnumHints(numHintsInput4);
             //Assert
             act.Should().Throw<FormatException>();
+        }
+
+        /// <summary>
+        ///     Test the RefreshHints function (test 1).
+        /// </summary>
+        /// <tag status=Complete></tag>
+        [Fact]
+        public void RefreshHintsTest1()
+        {
+            // Arrange
+            var objectUnderTest = new ExerciseImportHelper();
+            var ex1 = new Exercise
+            {
+                ExerciseCode = "FLX_003_L",
+                Name = "Old Calf stretch Left",
+                EasierHint = "Easy, Partner",
+                HarderHint = "As a diamond."
+            };
+            var hint1 = new ExerciseHint()
+            {
+                Id = ex1.Id,
+                Text = "Knees Straight",
+                ExerciseID = ex1.Id
+            };
+            var hint2 = new ExerciseHint()
+            {
+                Id = ex1.Id,
+                Text = "Heels on the floor",
+                ExerciseID = ex1.Id
+            };
+            ICollection<ExerciseHint> hints = new HashSet<ExerciseHint>();
+            hints.Add(hint1);
+            hints.Add(hint2);
+            // Act
+            objectUnderTest.TestHints(ex1, CSVInputex1);
+            //Assert
+            ex1.ExerciseHints.Equals(hints);
+        }
+
+        /// <summary>
+        ///     Test the RefreshHints function (test 1).
+        /// </summary>
+        /// <tag status=Complete></tag>
+        [Fact]
+        public void RefreshHintsTest2()
+        {
+            // Arrange
+            var objectUnderTest = new ExerciseImportHelper();
+            var ex2 = new Exercise
+            {
+                ExerciseCode = "FLX_003_R",
+                Name = "Old Calf stretch Right",
+                EasierHint = "Easy, Partner",
+                HarderHint = "As a diamond."
+            };
+            var hint1 = new ExerciseHint()
+            {
+                Id = ex2.Id,
+                Text = "Knees Straight",
+                ExerciseID = ex2.Id
+            };
+            var hint2 = new ExerciseHint()
+            {
+                Id = ex2.Id,
+                Text = "Heels on the floor",
+                ExerciseID = ex2.Id
+            };
+            var hint3 = new ExerciseHint()
+            {
+                Id = ex2.Id,
+                Text = "Lean forward!",
+                ExerciseID = ex2.Id
+            };
+            ICollection<ExerciseHint> hints = new HashSet<ExerciseHint>();
+            hints.Add(hint1);
+            hints.Add(hint2);
+            hints.Add(hint3);
+            // Act
+            objectUnderTest.TestHints(ex2, CSVInputex2);
+            //Assert
+            ex2.ExerciseHints.Equals(hints);
         }
 
         /// <summary>
