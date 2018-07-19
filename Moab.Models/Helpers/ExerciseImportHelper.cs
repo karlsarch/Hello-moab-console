@@ -75,20 +75,21 @@ namespace Moab.Models.Helpers
         /// <returns>
         ///     Returns a string that can be written directly to a .csv file
         /// </returns>
-        /// <tag status="In-Progress/Does not Compile"></tag>
+        /// <tag status="In-Progress/Compiles"></tag>
         public string Export(ICollection<Exercise> exercises)
         {
             string ExportCSV = null;
-
-            //TODO: Implementation
-
+            foreach (Exercise i in exercises)
+            {
+                ExportCSV += MakeCSVLine(i);
+            }
             return ExportCSV;
         }
 
         #endregion
 
         #region Debugging Code
-        #if DEBUG
+#if DEBUG
 
         /// <summary>
         ///     Public Accessor for SplitCSVLine Function
@@ -347,6 +348,11 @@ namespace Moab.Models.Helpers
 
             // Return edited list
             return LineList;
+        }
+
+        private string MakeCSVLine(Exercise exercise)
+        {
+            throw new NotImplementedException();
         }
 
         #endregion
