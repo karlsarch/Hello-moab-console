@@ -89,8 +89,8 @@ namespace MoabTests.Models.Helpers
             "tionFile,Old_Name_animationFile";
         const string numHintsInput4 = "InputHintNumTestExerciseCode,Name,CDT" +
             "_Class,CDT_AtHome,IsMovementDataCollected,UnitTarget,HintEasier" +
-            ",HintHarder,Hint1,Hint2,MDT_Class,MDT_AtHome,OldCode,Name_anima" +
-            "tionFile,Old_Name_animationFile";
+            ",MDT_Class,MDT_AtHome,OldCode,Name_animationFile,Old_Name_anima" +
+            "tionFile";
 
         #endregion
 
@@ -331,7 +331,7 @@ namespace MoabTests.Models.Helpers
             //Arrange
             var objectUnderTest = new ExerciseImportHelper();
             //Act
-            Action act = () => objectUnderTest.TestnumHints(numHintsInput2);
+            Action act = () => objectUnderTest.TestnumHints(numHintsInput4);
             //Assert
             act.Should().Throw<FormatException>();
         }

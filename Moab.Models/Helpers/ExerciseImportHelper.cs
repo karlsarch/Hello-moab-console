@@ -359,7 +359,7 @@ namespace Moab.Models.Helpers
             }
             else
             {
-                throw new FormatException("Invalid Format of CSV File");
+                throw new FormatException("Invalid File Format");
             }
         }
 
