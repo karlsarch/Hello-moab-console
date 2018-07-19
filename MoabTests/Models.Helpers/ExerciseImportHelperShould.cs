@@ -30,7 +30,8 @@ namespace MoabTests.Models.Helpers
             "\"Easy, Partner\"", "As a diamond", "", "", "", "", "", "", "",
             "", "", "" };
         const string CSVInputex3 = "STAB_012_X,Standing weight shift,Don't m" +
-            "ove,Close your eyes,,,,,,,,,,,";
+            "ove,Close your eyes,\"Look at a spot on the wall, but not too " +
+            "hard!\",,,,,,,,,,";
         string[] CSVLineex3 = { "STAB_012_X", "Standing Weight Shift",
             "Don't Move", "Close your eyes", "", "", "", "", "", "", "",
             "", "", "" };
@@ -375,7 +376,7 @@ namespace MoabTests.Models.Helpers
         }
 
         /// <summary>
-        ///     Test the RefreshHints function (test 1).
+        ///     Test the RefreshHints function (test 2).
         /// </summary>
         /// <tag status=Complete></tag>
         [Fact]
@@ -416,6 +417,60 @@ namespace MoabTests.Models.Helpers
             objectUnderTest.TestHints(ex2, CSVInputex2);
             //Assert
             ex2.ExerciseHints.Equals(hints);
+        }
+
+        /// <summary>
+        ///     Test the RefreshHints function (test 3).
+        /// </summary>
+        /// <tag status=Complete></tag>
+        [Fact]
+        public void RefreshHintsTest3()
+        {
+            // Arrange
+            var objectUnderTest = new ExerciseImportHelper();
+            var ex3 = new Exercise
+            {
+                ExerciseCode = "STAB_012_X",
+                Name = "Standing weight shift",
+                EasierHint = "Don't move",
+                HarderHint = "Close your eyes"
+            };
+            var hint1 = new ExerciseHint()
+            {
+                Id = ex3.Id,
+                Text = "\"Look at a spot on the wall, but not too hard!\"",
+                ExerciseID = ex3.Id
+            };
+            ICollection<ExerciseHint> hints = new HashSet<ExerciseHint>();
+            hints.Add(hint1);
+            // Act
+            objectUnderTest.TestHints(ex3, CSVInputex3);
+            //Assert
+            ex3.ExerciseHints.Equals(hints);
+        }
+
+        /// <summary>
+        ///     Test the RefreshHints function (test 4).
+        /// </summary>
+        /// <tag status=Complete></tag>
+        [Fact]
+        public void RefreshHintsTest4()
+        {
+            // Arrange
+            var objectUnderTest = new ExerciseImportHelper();
+            var ex4 = new Exercise
+            {
+                ExerciseCode = "KSA_999_X",
+                Name = "One Finger pull-up",
+                EasierHint = "Use two fingers",
+                HarderHint = "Pinky Finger"
+            };
+
+            ICollection<ExerciseHint> hints = new HashSet<ExerciseHint>();
+            // Act
+            objectUnderTest.TestHints(ex4, CSVInputex3);
+            //Assert
+            ex4.ExerciseHints.Equals(hints);
         }
 
         /// <summary>
