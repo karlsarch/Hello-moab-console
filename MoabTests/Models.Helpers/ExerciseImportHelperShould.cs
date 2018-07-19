@@ -340,7 +340,7 @@ namespace MoabTests.Models.Helpers
             "llected,UnitTarget,HintEasier,HintHarder,Hint1,Hint2,MDT_Class," +
             "MDT_AtHome,OldCode,Name_animationFile," +
             "Old_Name_animationFile";
-            string inputLine = "STAB_012_X,Standing weight shift,Y,Y,N,N,keep feet on floor," + 
+            string inputLine = "STAB_012_X,TestName,Y,Y,N,N,keep feet on floor," + 
             "lift non-weight bearing foot off floor," + 
             "Stand with your feet hip width apart and keep your legs straight as you shift weight from one foot to the other. ," + 
             ",N,N,,STAB_012_X_StandingWeightShift,STAB_012 Standing Weight Shift";
@@ -353,6 +353,27 @@ namespace MoabTests.Models.Helpers
             resultList.Count().Should().Be(4);
         }
 
+         [Fact]
+        public void CreateNew()
+        {
+            // Arrange
+            var importer = new ExerciseImportHelper();
+            const string validHeader = "ExerciseCode,Name,CDT_Class,CDT_AtHome,IsMovementDataCo" +
+            "llected,UnitTarget,HintEasier,HintHarder,Hint1,Hint2,MDT_Class," +
+            "MDT_AtHome,OldCode,Name_animationFile," +
+            "Old_Name_animationFile";
+            string inputLine = "JUMP_999_B,Standing backflip,Y,Y,N,N,don't keep feet on floor," + 
+            "lift non-weight bearing foot off floor," + 
+            "Stand with your feet hip width apart and keep your legs straight as you shift weight from one foot to the other. ," + 
+            ",N,N,,STAB_012_X_StandingWeightShift,STAB_012 Standing Weight Shift";
+            string input = validHeader + Environment.NewLine + inputLine;
+            // Act
+            var result = importer.Import(input, _existingExercises);
+            // Assert
+            List<Exercise> resultList = result.ToList();
+            resultList[4].Name.Should().Be("Standing backflip");
+            resultList.Count().Should().Be(5);
+        }
         #endregion
     }
 }
