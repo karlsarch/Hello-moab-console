@@ -43,6 +43,7 @@
   <ItemGroup>
     <Compile Include="Exercise.cs" />
     <Compile Include="ExerciseHint.cs" />
+    <Compile Include="Helpers\ExerciseExportHelper.cs" />
     <Compile Include="Helpers\ExerciseImportHelper.cs" />
     <Compile Include="Tour.cs" />
     <Compile Include="Tour_Trail.cs" />

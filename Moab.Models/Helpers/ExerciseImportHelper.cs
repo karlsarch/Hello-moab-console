@@ -22,6 +22,8 @@ namespace Moab.Models.Helpers
         #region Members
 
         const int numberOfColumns = 14;
+        //for use only in the ImportWithDelete method
+        public ICollection<Exercise> UpdatedAndNewExercises = new HashSet<Exercise>();
 
         #endregion
 
@@ -41,7 +43,7 @@ namespace Moab.Models.Helpers
         ///     </return>
         ///     <tag status="In-Progress/Compiles"></tag>
         /// </summary>
-        public ICollection<Exercise> Import(string importCSV, ICollection<Exercise> exercises)
+        public ICollection<Exercise> ImportNoDelete(string importCSV, ICollection<Exercise> exercises)
         {
             List<string[]> ImportList = SplitCSVInput(importCSV);
             if (!IsHeaderValid(importCSV))
@@ -64,10 +66,41 @@ namespace Moab.Models.Helpers
             return exercises;
         }
 
+        /// <summary>
+        /// Imports the CSV string to a new collection and leaves the old one 
+        /// with just the objects to be deleted.
+        /// </summary>
+        /// <param name="importCSV"></param>
+        /// <param name="exercises"></param>
+        /// <returns>The new collection of updated and added exercises</returns>
+        public ICollection<Exercise> ImportWithDelete(string importCSV, ICollection<Exercise> exercises)
+        {
+            List<string[]> ImportList = SplitCSVInput(importCSV);
+            if (!IsHeaderValid(importCSV))
+            {
+                throw new FormatException("Header is in improper format.");
+            }
+
+            foreach (string[] line in ImportList)
+            {
+                Exercise exercise = FindExtantExerciseInCollection(exercises, line[0]);
+                if (exercise == null)
+                {
+                    AddNewExercise(UpdatedAndNewExercises, line);
+                }
+                else
+                {
+                    AddNewExercise(UpdatedAndNewExercises, line);
+                    exercises.Remove(exercise);
+                }
+            }
+            return UpdatedAndNewExercises;
+        }
+
         #endregion
 
         #region Debugging Code
-        #if DEBUG
+#if DEBUG
 
         /// <summary>
         ///     Public Accessor for SplitCSVLine Function

@@ -340,13 +340,13 @@ namespace MoabTests.Models.Helpers
             "llected,UnitTarget,HintEasier,HintHarder,Hint1,Hint2,MDT_Class," +
             "MDT_AtHome,OldCode,Name_animationFile," +
             "Old_Name_animationFile";
-            string inputLine = "STAB_012_X,TestName,Y,Y,N,Y,make it easy," + 
-            "make it hard," + 
-            "Stand with your feet hip width apart and keep your legs straight as you shift weight from one foot to the other. ," + 
+            string inputLine = "STAB_012_X,TestName,Y,Y,N,Y,make it easy," +
+            "make it hard," +
+            "Stand with your feet hip width apart and keep your legs straight as you shift weight from one foot to the other. ," +
             ",N,N,,STAB_012_X_StandingWeightShift,STAB_012 Standing Weight Shift";
             string input = validHeader + Environment.NewLine + inputLine;
             // Act
-            var result = importer.Import(input, _existingExercises);
+            var result = importer.ImportNoDelete(input, _existingExercises);
             // Assert
             List<Exercise> resultList = result.ToList();
             resultList[2].Name.Should().Be("TestName");
@@ -357,7 +357,7 @@ namespace MoabTests.Models.Helpers
             resultList.Count().Should().Be(4);
         }
 
-         [Fact]
+        [Fact]
         public void CreateNew()
         {
             // Arrange
@@ -366,16 +366,42 @@ namespace MoabTests.Models.Helpers
             "llected,UnitTarget,HintEasier,HintHarder,Hint1,Hint2,MDT_Class," +
             "MDT_AtHome,OldCode,Name_animationFile," +
             "Old_Name_animationFile";
-            string inputLine = "JUMP_999_B,Standing backflip,Y,Y,N,Y,land on your back," + 
-            "double backflip," + 
-            "Push off with both feet. ,Use your muscles! ,Try harder! , " + 
+            string inputLine = "JUMP_999_B,Standing backflip,Y,Y,N,Y,land on your back," +
+            "double backflip," +
+            "Push off with both feet. ,Use your muscles! ,Try harder! , " +
             "N,N,,STAB_012_X_StandingWeightShift,STAB_012 Standing Weight Shift";
             string input = validHeader + Environment.NewLine + inputLine;
             // Act
-            var result = importer.Import(input, _existingExercises);
+            var result = importer.ImportNoDelete(input, _existingExercises);
             // Assert
             List<Exercise> resultList = result.ToList();
-            resultList[4].ExerciseCode.Should().Be("Jump_999_B");
+            resultList[4].ExerciseCode.Should().Be("JUMP_999_B");
+            resultList[4].Name.Should().Be("Standing backflip");
+            resultList[4].HasRepetitionTarget.Should().Be(true);
+            resultList[4].EasierHint.Should().Be("land on your back");
+            resultList[4].HarderHint.Should().Be("double backflip");
+            resultList.Count().Should().Be(5);
+        }
+
+        [Fact]
+        public void CreateNewMultiHint()
+        {
+            // Arrange
+            var importer = new ExerciseImportHelper();
+            const string validHeader = "ExerciseCode,Name,CDT_Class,CDT_AtHome,IsMovementDataCo" +
+            "llected,UnitTarget,HintEasier,HintHarder,Hint1,Hint2,Hint3,MDT_Class," +
+            "MDT_AtHome,OldCode,Name_animationFile," +
+            "Old_Name_animationFile";
+            string inputLine = "JUMP_999_B,Standing backflip,Y,Y,N,Y,land on your back," +
+            "double backflip," +
+            "Push off with both feet. ,Use your muscles! ,Try harder! , " +
+            "N,N,,STAB_012_X_StandingWeightShift,STAB_012 Standing Weight Shift";
+            string input = validHeader + Environment.NewLine + inputLine;
+            // Act
+            var result = importer.ImportNoDelete(input, _existingExercises);
+            // Assert
+            List<Exercise> resultList = result.ToList();
+            resultList[4].ExerciseCode.Should().Be("JUMP_999_B");
             resultList[4].Name.Should().Be("Standing backflip");
             resultList[4].HasRepetitionTarget.Should().Be(true);
             resultList[4].EasierHint.Should().Be("land on your back");
@@ -386,6 +412,7 @@ namespace MoabTests.Models.Helpers
             hintList[2].Should().Be("Try Harder! ");
             resultList.Count().Should().Be(5);
         }
+
         #endregion
     }
 }
