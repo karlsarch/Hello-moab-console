@@ -430,15 +430,18 @@ namespace Moab.Models.Helpers
         /// <returns>
         ///     A string that is the header for a .CSV file
         /// </returns>
-        /// <tag status="In-Progress/Does not Compile"></tag>
+        /// <tag status="Complete"></tag>
         protected string createHeader(int maxNumHints)
         {
             string CSV = "ExerciseCode, Name, CDT_Class, CDT_AtHome, IsMov" +
                 "ementDataCollected, UnitTarget, HintEasier, HintHarder,";
             for (int i = 1; i <= maxNumHints; i++)
             {
-                CSV +=
+                CSV += "Hint" + i.ToString() + ",";
             }
+            CSV += "MDT_Class,MDT_AtHome,OldCode,Name_animationFile,Old_Nam" +
+                "e_animationFile" + Environment.NewLine + ",,,,,,,,,,,,," +
+                "," + Environment.NewLine;
             return CSV;
         }
 
