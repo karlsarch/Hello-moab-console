@@ -75,15 +75,10 @@ namespace Moab.Models.Helpers
         /// <returns>
         ///     Returns a string that can be written directly to a .csv file
         /// </returns>
-        /// <tag status="In-Progress/Compiles"></tag>
+        /// <tag status="Complete/Requires Testing"></tag>
         public string Export(ICollection<Exercise> exercises)
         {
-            int maxNumHints = 0;
-            foreach (Exercise i in exercises)
-            {
-                maxNumHints = findMaxNumHints(exercises);
-            }
-            string ExportCSV = createHeader(maxNumHints);
+            string ExportCSV = createHeader(findMaxNumHints(exercises));
             foreach (Exercise i in exercises)
             {
                 ExportCSV += MakeCSVLine(i);
@@ -378,10 +373,11 @@ namespace Moab.Models.Helpers
             CSVLine += ConvertBooltoYN(exercise.HasRepetitionTarget) + ",";
             CSVLine += exercise.EasierHint + ",";
             CSVLine += exercise.HarderHint + ",";
-            //TODO: hint implementation
-
+            foreach (ExerciseHint hint in exercise.ExerciseHints)
+            {
+                CSVLine += hint.Text + ",";
+            }
             for (int i = 0; i < 5; i++) // for MDT_Class, MDT_AtHome, OldCode, Name_animationFile, and Old_Name_animationFile
-
             {
                 CSVLine += "Unknown,";
             }
