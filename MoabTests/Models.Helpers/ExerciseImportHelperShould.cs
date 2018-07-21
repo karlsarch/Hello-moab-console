@@ -387,6 +387,35 @@ namespace MoabTests.Models.Helpers
         }
 
         [Fact]
+        public void CreateNewTwoHint()
+        {
+            // Arrange
+            var importer = new ExerciseImportHelper();
+            const string validHeader = "ExerciseCode,Name,CDT_Class,CDT_AtHome,IsMovementDataCo" +
+            "llected,UnitTarget,HintEasier,HintHarder,Hint1,Hint2,MDT_Class," +
+            "MDT_AtHome,OldCode,Name_animationFile," +
+            "Old_Name_animationFile";
+            string inputLine = "JUMP_999_B,Standing backflip,Y,Y,N,Y,land on your back," +
+            "double backflip," +
+            "Push off with both feet. ,Use your muscles!," +
+            "N,N,,STAB_012_X_StandingWeightShift,STAB_012 Standing Weight Shift";
+            string input = validHeader + Environment.NewLine + inputLine;
+            // Act
+            var result = importer.ImportNoDelete(input, _existingExercises);
+            // Assert
+            List<Exercise> resultList = result.ToList();
+            resultList[4].ExerciseCode.Should().Be("JUMP_999_B");
+            resultList[4].Name.Should().Be("Standing backflip");
+            resultList[4].HasRepetitionTarget.Should().Be(true);
+            resultList[4].EasierHint.Should().Be("land on your back");
+            resultList[4].HarderHint.Should().Be("double backflip");
+            var hintList = resultList[4].ExerciseHints.ToList();
+            hintList[0].Should().Be("Push off with both feet. ");
+            hintList[1].Should().Be("Use your muscles! ");
+            resultList.Count().Should().Be(5);
+        }
+
+        [Fact]
         public void CreateNewMultiHint()
         {
             // Arrange
