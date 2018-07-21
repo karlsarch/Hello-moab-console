@@ -22,8 +22,6 @@ namespace Moab.Models.Helpers
         #region Members
 
         const int numberOfColumns = 14;
-        //for use only in the ImportWithDelete method
-        public ICollection<Exercise> UpdatedAndNewExercises = new HashSet<Exercise>();
 
         #endregion
 
@@ -75,6 +73,7 @@ namespace Moab.Models.Helpers
         /// <returns>The new collection of updated and added exercises</returns>
         public ICollection<Exercise> ImportWithDelete(string importCSV, ICollection<Exercise> exercises)
         {
+            ICollection<Exercise> updatedAndNewExercises = new HashSet<Exercise>();
             List<string[]> ImportList = SplitCSVInput(importCSV);
             if (!IsHeaderValid(importCSV))
             {
@@ -86,15 +85,16 @@ namespace Moab.Models.Helpers
                 Exercise exercise = FindExtantExerciseInCollection(exercises, line[0]);
                 if (exercise == null)
                 {
-                    AddNewExercise(UpdatedAndNewExercises, line);
+                    AddNewExercise(updatedAndNewExercises, line);
                 }
                 else
                 {
-                    AddNewExercise(UpdatedAndNewExercises, line);
+                    updatedAndNewExercises.Add(exercise);
                     exercises.Remove(exercise);
+                    UpdateExercise(exercise, line);
                 }
             }
-            return UpdatedAndNewExercises;
+            return updatedAndNewExercises;
         }
 
         #endregion
@@ -243,7 +243,7 @@ namespace Moab.Models.Helpers
         /// Parameter</tag>
         protected void UpdateExercise(Exercise exercise, string[] updateCSV)
         {
-            //TODO: add support for  generic hint collection
+            //TODO: add support for generic hint collection
             exercise.ExerciseCode = updateCSV[(int)ExerciseCSVColumns.ExerciseCode];
             exercise.Name = updateCSV[(int)ExerciseCSVColumns.Name];
             exercise.EasierHint = updateCSV[(int)ExerciseCSVColumns.HintEasier];
@@ -267,6 +267,7 @@ namespace Moab.Models.Helpers
         {
             Exercise exercise = new Exercise();
             UpdateExercise(exercise, newCSV);
+            exercise.DateCreated = DateTime.Now;
             exercises.Add(exercise);
         }
 
