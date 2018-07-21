@@ -21,15 +21,15 @@ namespace MoabTests.Models.Helpers
         const string CSVInputex1 = "FLX_003_L,Old Calf stretch Left,\"Easy, " +
             "Partner\",As a diamond.,,,,,,,,,,,";
         string[] CSVLineex1 = { "FLX_003_L", "Old Calf Stretch Left",
-            "\"Easy, Partner\"", "As a diamond", "", "", "", "", "", "", "",
+            "Easy, Partner", "As a diamond", "", "", "", "", "", "", "",
             "", "", "" };
         const string CSVInputex2 = "FLX_003_R,Old Calf stretch Right,\"Easy," +
             " Partner\",As a diamond.,,,,,,,,,,,";
         string[] CSVLineex2 = { "FLX_003_R", "Old Calf Stretch Right",
-            "\"Easy, Partner\"", "As a diamond", "", "", "", "", "", "", "",
+            "Easy, Partner", "As a diamond", "", "", "", "", "", "", "",
             "", "", "" };
-        const string CSVInputex3 = "STAB_012_X,Standing weight shift,Don't m" +
-            "ove,Close your eyes,,,,,,,,,,,";
+        const string CSVInputex3 = "STAB_012_X,Standing weight shift,Don't move," +
+            "Close your eyes,,,,,,,,,,,";
         string[] CSVLineex3 = { "STAB_012_X", "Standing Weight Shift",
             "Don't Move", "Close your eyes", "", "", "", "", "", "", "",
             "", "", "" };
@@ -105,6 +105,7 @@ namespace MoabTests.Models.Helpers
 
             var ex3 = new Exercise
             {
+                Id = Guid.NewGuid(),
                 ExerciseCode = "STAB_012_X",
                 Name = "Standing weight shift",
                 EasierHint = "Don't move",
@@ -277,13 +278,16 @@ namespace MoabTests.Models.Helpers
         ///     <tag status=Complete></tag>
         /// </summary>
         [Theory]
+        //perfectly formatted header should work
         [InlineData("ExerciseCode,Name,CDT_Class,CDT_AtHome,IsMovementDataCo" +
             "llected,UnitTarget,HintEasier,HintHarder,Hint1,Hint2,MDT_Class," +
             "MDT_AtHome,OldCode,Name_animationFile," +
             "Old_Name_animationFile", true)]
+        //missing column at end should not work
         [InlineData("ExerciseCode,Name,CDT_Class,CDT_AtHome,IsMovementDataCo" +
             "llected,UnitTarget,HintEasier,HintHarder,Hint1,Hint2,MDT_Class," +
             "MDT_AtHome,OldCode,Name_animationFile,", false)]
+        //missing column in middle should not work
         [InlineData("ExerciseCode,Name,CDT_Class,CDT_AtHome,IsMovementDataCo" +
             "llected,UnitTarget,HintEasier,HintHarder,Hint1,Hint2,MDT_Class," +
             "Old_Name_animationFile", false)]
@@ -295,14 +299,26 @@ namespace MoabTests.Models.Helpers
             "llected,UnitTarget,CDT_AtHome,HintEasier,HintHarder,Hint1,Hint2" +
             ",MDT_Class,MDT_AtHome,OldCode,Name_animationFile,Old_Name_anima" +
             "tionFile", false)]
+        //testing if case affects result
         [InlineData("ExerciseCode,name,CDT_Class,CDT_AtHome,IsMovementDataCo" +
             "llected,UnitTarget,HintEasier,HintHarder,Hint1,Hint2,MDT_Class," +
             "MDT_AtHome,OldCode,Name_animationFile," +
             "Old_Name_animationFile", true)]
+        //testing if extra columns at the end affect result
         [InlineData("ExerciseCode,Name,CDT_Class,CDT_AtHome,IsMovementDataCo" +
             "llected,UnitTarget,HintEasier,HintHarder,Hint1,Hint2,MDT_Class," +
             "MDT_AtHome,OldCode,Name_animationFile,Old_Name_animationFile,xx" +
             ",e,y", true)]
+        //tests if spaces in the column names affect result
+        [InlineData("ExerciseCode,Name,CDT_Class,CDT_AtHome,IsMovementDataCo" +
+            "llected,UnitTarget,Hint Easier,Hint Harder,Hint1,Hint2,MDT_Class," +
+            "MDT_AtHome,OldCode,Name_animationFile," +
+            "Old_Name_animationFile", true)]
+        //testing if new column at beginning somehow succeeds
+        [InlineData("Object ID, ExerciseCode,Name,CDT_Class,CDT_AtHome,IsMovementDataCo" +
+            "llected,UnitTarget,HintEasier,HintHarder,Hint1,Hint2,MDT_Class," +
+            "MDT_AtHome,OldCode,Name_animationFile," +
+            "Old_Name_animationFile", false)]
 
         public void CheckHeaderTest(string header, bool isValidExpected)
         {
@@ -314,6 +330,160 @@ namespace MoabTests.Models.Helpers
 
             // Assert
             result.Should().Be(isValidExpected);
+        }
+
+        [Fact]
+        public void UpdateExisting()
+        {
+            // Arrange
+            var importer = new ExerciseImportHelper();
+            const string validHeader = "ExerciseCode,Name,CDT_Class,CDT_AtHome,IsMovementDataCo" +
+            "llected,UnitTarget,HintEasier,HintHarder,Hint1,Hint2,MDT_Class," +
+            "MDT_AtHome,OldCode,Name_animationFile," +
+            "Old_Name_animationFile";
+            string inputLine = "STAB_012_X,TestName,Y,Y,N,Y,make it easy," +
+            "make it hard," +
+            "Stand with your feet hip width apart and keep your legs straight as you shift weight from one foot to the other. ," +
+            ",N,N,,STAB_012_X_StandingWeightShift,STAB_012 Standing Weight Shift";
+            string input = validHeader + Environment.NewLine + inputLine;
+            var originalId = ((List<Exercise>)_existingExercises)[2].Id;
+            // Act
+            var result = importer.ImportNoDelete(input, _existingExercises);
+            // Assert
+            List<Exercise> resultList = result.ToList();
+            resultList[2].Name.Should().Be("TestName");
+            resultList[2].ExerciseCode.Should().Be("STAB_012_X");
+            resultList[2].HasRepetitionTarget.Should().Be(true);
+            resultList[2].EasierHint.Should().Be("make it easy");
+            resultList[2].HarderHint.Should().Be("make it hard");
+            resultList[2].Id.Should().Be(originalId);
+            resultList.Count().Should().Be(4);
+        }
+
+        [Fact]
+        public void CreateNew()
+        {
+            // Arrange
+            var importer = new ExerciseImportHelper();
+            const string validHeader = "ExerciseCode,Name,CDT_Class,CDT_AtHome,IsMovementDataCo" +
+            "llected,UnitTarget,HintEasier,HintHarder,Hint1,Hint2,MDT_Class," +
+            "MDT_AtHome,OldCode,Name_animationFile," +
+            "Old_Name_animationFile";
+            string inputLine = "JUMP_999_B,Standing backflip,Y,Y,N,Y,land on your back," +
+            "double backflip," +
+            "Push off with both feet. ,Use your muscles! ,Try harder! , " +
+            "N,N,,STAB_012_X_StandingWeightShift,STAB_012 Standing Weight Shift";
+            string input = validHeader + Environment.NewLine + inputLine;
+            // Act
+            var result = importer.ImportNoDelete(input, _existingExercises);
+            // Assert
+            List<Exercise> resultList = result.ToList();
+            resultList[4].ExerciseCode.Should().Be("JUMP_999_B");
+            resultList[4].Name.Should().Be("Standing backflip");
+            resultList[4].HasRepetitionTarget.Should().Be(true);
+            resultList[4].EasierHint.Should().Be("land on your back");
+            resultList[4].HarderHint.Should().Be("double backflip");
+            resultList.Count().Should().Be(5);
+        }
+
+        [Fact]
+        public void CreateNewMultiHint()
+        {
+            // Arrange
+            var importer = new ExerciseImportHelper();
+            const string validHeader = "ExerciseCode,Name,CDT_Class,CDT_AtHome,IsMovementDataCo" +
+            "llected,UnitTarget,HintEasier,HintHarder,Hint1,Hint2,Hint3,MDT_Class," +
+            "MDT_AtHome,OldCode,Name_animationFile," +
+            "Old_Name_animationFile";
+            string inputLine = "JUMP_999_B,Standing backflip,Y,Y,N,Y,land on your back," +
+            "double backflip," +
+            "Push off with both feet. ,Use your muscles! ,Try harder! , " +
+            "N,N,,STAB_012_X_StandingWeightShift,STAB_012 Standing Weight Shift";
+            string input = validHeader + Environment.NewLine + inputLine;
+            // Act
+            var result = importer.ImportNoDelete(input, _existingExercises);
+            // Assert
+            List<Exercise> resultList = result.ToList();
+            resultList[4].ExerciseCode.Should().Be("JUMP_999_B");
+            resultList[4].Name.Should().Be("Standing backflip");
+            resultList[4].HasRepetitionTarget.Should().Be(true);
+            resultList[4].EasierHint.Should().Be("land on your back");
+            resultList[4].HarderHint.Should().Be("double backflip");
+            var hintList = resultList[4].ExerciseHints.ToList();
+            hintList[0].Should().Be("Push off with both feet. ");
+            hintList[1].Should().Be("Use your muscles! ");
+            hintList[2].Should().Be("Try Harder! ");
+            resultList.Count().Should().Be(5);
+        }
+
+        [Fact]
+        public void CreateNewCollectionWithDelete()
+        {
+            // Arrange
+            var importer = new ExerciseImportHelper();
+            const string validHeader = "ExerciseCode,Name,CDT_Class,CDT_AtHome,IsMovementDataCo" +
+            "llected,UnitTarget,HintEasier,HintHarder,Hint1,Hint2,MDT_Class," +
+            "MDT_AtHome,OldCode,Name_animationFile," +
+            "Old_Name_animationFile";
+            string inputLine = "STAB_010_R,Half tandem stand Right,Y,Y,Y,N,wider stance," +
+                "put weight evenly on both feet,Remember the goal is to have your feet as close" + 
+                "as possible.Your left foot should be nestling inside your right instep. ," + 
+                "Do your best to stand up tall with your head aligned with your spine.," + 
+                " N, N,, STAB_010_R_ HalfTandemStand,STAB_010 Half tandem stand";
+
+            string input = validHeader + Environment.NewLine + inputLine;
+            // Act
+            var result = importer.ImportWithDelete(input, _existingExercises);
+            // Assert
+            List<Exercise> resultList = result.ToList();
+            resultList.Count().Should().Be(1);
+            _existingExercises.ToList().Count().Should().Be(4);
+            resultList[0].ExerciseCode.Should().Be("STAB_010_R");
+            resultList[0].Name.Should().Be("Half tandem stand Right");
+            resultList[0].HasRepetitionTarget.Should().Be(false);
+            resultList[0].EasierHint.Should().Be("wider stance");
+            resultList[0].HarderHint.Should().Be("put weight evenly on both feet");
+        }
+        
+        //This both adds a new exercise and should remove one from the old list while adding it to 
+        //the new
+        [Fact]
+        public void CreateNewCollectionWithDeleteWithUpdate()
+        {
+            // Arrange
+            var importer = new ExerciseImportHelper();
+            const string validHeader = "ExerciseCode,Name,CDT_Class,CDT_AtHome,IsMovementDataCo" +
+            "llected,UnitTarget,HintEasier,HintHarder,Hint1,Hint2,MDT_Class," +
+            "MDT_AtHome,OldCode,Name_animationFile," +
+            "Old_Name_animationFile";
+            string inputLine = "STAB_010_R,Half tandem stand Right,Y,Y,Y,N,wider stance," +
+                "put weight evenly on both feet,Remember the goal is to have your feet as close" +
+                "as possible.Your left foot should be nestling inside your right instep. ," +
+                "Do your best to stand up tall with your head aligned with your spine.," +
+                " N, N,, STAB_010_R_ HalfTandemStand,STAB_010 Half tandem stand";
+            string inputLine2 = "STAB_012_X,TestName,Y,Y,N,Y,make it easy," +
+            "make it hard," +
+            "Stand with your feet hip width apart and keep your legs straight as you shift weight from one foot to the other. ," +
+            ",N,N,,STAB_012_X_StandingWeightShift,STAB_012 Standing Weight Shift";
+            string input = validHeader + Environment.NewLine + inputLine + Environment.NewLine + inputLine2;
+            var originalId = _existingExercises.ToList()[2].Id;
+            // Act
+            var result = importer.ImportWithDelete(input, _existingExercises);
+            // Assert
+            List<Exercise> resultList = result.ToList();
+            resultList.Count().Should().Be(2);
+            _existingExercises.ToList().Count().Should().Be(3);
+            resultList[0].ExerciseCode.Should().Be("STAB_010_R");
+            resultList[0].Name.Should().Be("Half tandem stand Right");
+            resultList[0].HasRepetitionTarget.Should().Be(false);
+            resultList[0].EasierHint.Should().Be("wider stance");
+            resultList[0].HarderHint.Should().Be("put weight evenly on both feet");
+            resultList[1].ExerciseCode.Should().Be("STAB_012_X");
+            resultList[1].Name.Should().Be("TestName");
+            resultList[1].HasRepetitionTarget.Should().Be(true);
+            resultList[1].EasierHint.Should().Be("make it easy");
+            resultList[1].HarderHint.Should().Be("make it hard");
+            resultList[1].Id.Should().Be(originalId);
         }
 
         #endregion
