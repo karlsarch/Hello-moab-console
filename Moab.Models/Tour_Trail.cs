@@ -31,7 +31,14 @@ namespace Moab.Models
         /// <returns></returns>
         public bool IsValid()
         {
-            // TODO: Add implementation
+            if (Difficulty == null)
+            {
+                return true;
+            }
+            else if (Difficulty >= (Trail.MinDifficulty ?? 0) && Difficulty <= (Trail.MaxDifficulty ?? 1000))
+            {
+                return true;
+            }
             return false;
         }
     }

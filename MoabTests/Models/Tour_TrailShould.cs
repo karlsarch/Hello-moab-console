@@ -26,6 +26,7 @@ namespace MoabTests.Models
         [InlineData(50, 50, 50, true)]
         [InlineData(50, 50, null, true)]
         [InlineData(null, 990, 1, true)]
+        [InlineData(0, null, 1001, false)]
         public void Validate(int? minDifficulty, int? maxDifficulty, int? difficulty, bool isValidExpected)
         {
             // Arrange
