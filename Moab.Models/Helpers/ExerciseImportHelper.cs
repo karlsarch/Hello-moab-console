@@ -36,10 +36,10 @@ namespace Moab.Models.Helpers
         ///         Existing collection of exercises (can be empty) to be updated or added to.
         ///     </paramref>
         ///     <paramref name="importCSV">
-        ///         String version of the .CSV file imported.
+        ///         multi-line string representing the data to be imported in .csv format.
         ///     </paramref>
         ///     <return>
-        ///         Returns the update collection of exercises.
+        ///         The updated collection of exercises.
         ///     </return>
         ///     <tag status="In-Progress/Compiles"></tag>
         /// </summary>
@@ -133,94 +133,6 @@ namespace Moab.Models.Helpers
 
         #endregion
 
-        #region Debugging Code
-#if DEBUG
-
-        /// <summary>
-        ///     Public Accessor for SplitCSVLine Function
-        ///     <paramref name="Line">
-        ///         The line inputted in the form of a string
-        ///         (see below to LineSplit function)
-        ///     </paramref>
-        ///     <return>
-        ///         Returns an array of strings made out of the line
-        ///     </return>
-        ///     <tag status=Complete></tag>
-        /// </summary>
-        public string[] TestLineSplit(string Line)
-        {
-            return SplitCSVLine(Line);
-        }
-
-        /// <summary>
-        ///     Public Accessor for SplitCSVInput Function
-        ///     <paramref name="input">
-        ///         The string based on the CSV file to be passed in
-        ///     </paramref>
-        ///     <return>
-        ///         A list of arrays of strings will be easy to work with
-        ///     </return>
-        ///     <tag status=Complete></tag>
-        /// </summary>
-        public List<string[]> TestInputProcessing(string input)
-        {
-            return SplitCSVInput(input);
-        }
-
-        /// <summary>
-        ///     Public Accessor for the IsHeaderValid Function
-        ///     <paramref name="header">
-        ///         The string based on the CSV file to be passed in
-        ///     </paramref>
-        ///     <return>
-        ///         a boolean that will be true if the header is formatted
-        ///         correctly and false if not.
-        ///     </return>
-        ///     <tag status=Complete></tag>
-        /// </summary>
-        public bool TestIsHeaderValid(string header)
-        {
-            return IsHeaderValid(header);
-        }
-
-        /// <summary>
-        ///     Test code for FindNumHints function
-        /// </summary>
-        /// <param name="Line">
-        ///     String format of input (should be one line of the CSV)
-        /// </param>
-        /// <returns>
-        ///     Returns the number of hints in the line
-        /// </returns>
-        /// <tag status="Complete"></tag>
-        public int TestnumHints(string Line)
-        {
-            string[] LineSplit = SplitCSVLine(Line);
-            return FindNumHints(LineSplit);
-        }
-
-        /// <summary>
-        ///     Test code for the RefreshHint function.
-        /// </summary>
-        /// <param name="Line">
-        ///     The CSV string that is input
-        /// </param>
-        /// <param name="exercise">
-        ///     The exercise passed in to get its hints refreshed
-        /// </param>
-        /// <returns>
-        ///     Returns the exercise with its hints refreshed from line
-        /// </returns>
-        /// <tag status=Complete></tag>
-        public Exercise TestHints(Exercise exercise, string Line)
-        {
-            string[] LineSplit = SplitCSVLine(Line);
-            RefreshHints(exercise, LineSplit);
-            return exercise;
-        }
-
-#endif
-        #endregion
 
         #region Protected Methods
 
@@ -234,7 +146,7 @@ namespace Moab.Models.Helpers
         ///     Returns true if the header is in proper format, false otherwise
         /// </returns>
         /// <tag status=Complete></tag>
-        protected bool IsHeaderValid(string CSVInput)
+        internal bool IsHeaderValid(string CSVInput)
         {
             CSVInput.Trim();
             string[] split = CSVInput.Split('\n');
@@ -351,7 +263,7 @@ namespace Moab.Models.Helpers
         ///     </return>
         ///     <tag status=Complete></tag>
         /// </summary>
-        protected List<string[]> SplitCSVInput(string CSVInput)
+        internal List<string[]> SplitCSVInput(string CSVInput)
         {
             // Create LineList
             var LineList = new List<string[]>();
@@ -443,7 +355,7 @@ namespace Moab.Models.Helpers
         ///     collection has
         /// </returns>
         /// <tag status="Complete"></tag>
-        protected int FindMaxNumHints(ICollection<Exercise> exercises)
+        internal static int FindMaxNumHints(ICollection<Exercise> exercises)
         {
             int maxNum = 0;
             foreach (Exercise ex in exercises)
@@ -502,15 +414,15 @@ namespace Moab.Models.Helpers
         ///     The processed CSV line that I am taking the hints from.
         /// </param>
         /// <tag status="In-Progress/Requires Testing"></tag>
-        private void RefreshHints(Exercise exercise, string[] CSVLine)
+        internal void RefreshHints(Exercise exercise, string[] CSVLine)
         {
             exercise.ExerciseHints.Clear();
             for (int i = 0; i < FindNumHints(CSVLine); i++)
             {
-                var hint = new ExerciseHint();
-                hint.Id = exercise.Id;
-                hint.ExerciseID = exercise.Id; //Is this the right connection?
-                hint.Text = CSVLine[(int)ExerciseCSVColumns.Hint1 + i];
+                var hint = new ExerciseHint()
+                {
+                    Text = CSVLine[(int)ExerciseCSVColumns.Hint1 + i]
+                };
                 exercise.ExerciseHints.Add(hint);
             }
         }
@@ -525,7 +437,7 @@ namespace Moab.Models.Helpers
         ///     Returns the number of hints (not including easierhint or harderhint) in the string array
         /// </returns>
         /// <tag status="In-Progress/Requires Testing"></tag>
-        private int FindNumHints(string[] CSVLine)
+        internal static int FindNumHints(string[] CSVLine)
         {
             const int numNonHintColumns = 13;
             if (CSVLine.Length >= numNonHintColumns)
@@ -564,7 +476,7 @@ namespace Moab.Models.Helpers
         ///     </return>
         ///     <tag status="In-Progress/Compiles"></tag>
         /// </summary>
-        private string[] SplitCSVLine(string CSVLine)
+        internal string[] SplitCSVLine(string CSVLine)
         {
             char[] splitters = { ',', '\"' };
             string[] temp = CSVLine.Split(splitters);
