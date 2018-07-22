@@ -16,14 +16,15 @@ namespace Moab.Models.Helpers
     {
         #region Members
 
-        enum ExerciseCSVColumns
+        public enum ExerciseCSVColumns
         {
             ExerciseCode, Name, CDT_Class, CDT_AtHome,
-            IsMovementDataCollected, UnitTarget, HintEasier, HintHarder, Hint1,
-            Hint2, MDT_Class, MDT_AtHome, OldCode, Name_animationFile,
+            IsMovementDataCollected, UnitTarget, HintEasier, HintHarder,
+            Hint1, Hint2,
+            MDT_Class, MDT_AtHome, OldCode, Name_animationFile,
             Old_Name_animationFile
         }
-        const int numNonHintColumns = 13;
+        private const int NumNonHintColumns = 13;
 
         #endregion
 
@@ -32,8 +33,7 @@ namespace Moab.Models.Helpers
         /// <summary>
         ///     Primary public function from this class.
         ///     <paramref name="exercises">
-        ///         Existing collection of exercises (can be empty) to be
-        ///         updated or added to.
+        ///         Existing collection of exercises (can be empty) to be updated or added to.
         ///     </paramref>
         ///     <paramref name="importCSV">
         ///         String version of the .CSV file imported.
@@ -45,13 +45,25 @@ namespace Moab.Models.Helpers
         /// </summary>
         public ICollection<Exercise> Import(string importCSV, ICollection<Exercise> exercises)
         {
+            if (importCSV == null || exercises == null)
+            {
+                throw new ArgumentException("Arguments must not be null.");
+            }
+
             List<string[]> ImportList = SplitCSVInput(importCSV);
             if (!IsHeaderValid(importCSV))
             {
-                throw new FormatException("Header is in improper format.");
+                var values = Enum.GetNames(typeof(ExerciseCSVColumns));
+                var sb = new StringBuilder($"{values[0]}");
+                for (int i = 1; i < values.Length; i++ )
+                {
+                    sb.Append($",{values[i]}");
+                }
+
+                throw new FormatException($"Input CSV has unexpected column format. Expected format: '{sb.ToString()}'. Note that variable number of Hint columns are allowed.");
             }
 
-            foreach (string[] line in ImportList)
+            foreach (var line in ImportList)
             {
                 Exercise exercise = FindExtantExerciseInCollection(exercises, line[0]);
                 if (exercise == null)
@@ -78,7 +90,7 @@ namespace Moab.Models.Helpers
         /// <tag status="Complete/Requires Testing"></tag>
         public string Export(ICollection<Exercise> exercises)
         {
-            string ExportCSV = createHeader(findMaxNumHints(exercises));
+            string ExportCSV = CreateHeader(FindMaxNumHints(exercises));
             foreach (Exercise i in exercises)
             {
                 ExportCSV += MakeCSVLine(i);
@@ -151,7 +163,7 @@ namespace Moab.Models.Helpers
         public int TestnumHints(string Line)
         {
             string[] LineSplit = SplitCSVLine(Line);
-            return findnumhints(LineSplit);
+            return FindNumHints(LineSplit);
         }
 
         /// <summary>
@@ -256,24 +268,6 @@ namespace Moab.Models.Helpers
         }
 
         /// <summary>
-        ///     Adds a new exercise to the collection of exercises
-        /// </summary>
-        /// <param name="exercises">
-        ///     The exercise object to be updated
-        /// </param>
-        /// <param name="newCSV">
-        ///     The array of strings that corresponds to each exercise
-        /// </param>
-        /// <tag status=In-Progress/Compiles>Perhaps Requires Reference
-        /// Parameter</tag>
-        protected void AddNewExercise(ICollection<Exercise> exercises, string[] newCSV)
-        {
-            var exercise = new Exercise();
-            UpdateExercise(exercise, newCSV);
-            exercises.Add(exercise);
-        }
-
-        /// <summary>
         ///     Updates the necessary parts of each exercise if it already exists
         /// </summary>
         /// <param name="exercise">
@@ -293,6 +287,24 @@ namespace Moab.Models.Helpers
             exercise.HasRepetitionTarget = ConvertYNtoBool(updateCSV[(int)ExerciseCSVColumns.UnitTarget]);
             exercise.DateLastUpdated = DateTime.Now;
             RefreshHints(exercise, updateCSV);
+        }
+
+        /// <summary>
+        ///     Adds a new exercise to the collection of exercises
+        /// </summary>
+        /// <param name="exercises">
+        ///     The exercise object to be updated
+        /// </param>
+        /// <param name="newCSV">
+        ///     The array of strings that corresponds to each exercise
+        /// </param>
+        /// <tag status=In-Progress/Compiles>Perhaps Requires Reference
+        /// Parameter</tag>
+        protected void AddNewExercise(ICollection<Exercise> exercises, string[] newCSV)
+        {
+            var exercise = new Exercise();
+            UpdateExercise(exercise, newCSV);
+            exercises.Add(exercise);
         }
 
         /// <summary>
@@ -397,7 +409,7 @@ namespace Moab.Models.Helpers
         ///     collection has
         /// </returns>
         /// <tag status="Complete"></tag>
-        protected int findMaxNumHints(ICollection<Exercise> exercises)
+        protected int FindMaxNumHints(ICollection<Exercise> exercises)
         {
             int maxNum = 0;
             foreach (Exercise ex in exercises)
@@ -427,7 +439,7 @@ namespace Moab.Models.Helpers
         ///     A string that is the header for a .CSV file
         /// </returns>
         /// <tag status="Complete"></tag>
-        protected string createHeader(int maxNumHints)
+        protected string CreateHeader(int maxNumHints)
         {
             string CSV = "ExerciseCode, Name, CDT_Class, CDT_AtHome, IsMov" +
                 "ementDataCollected, UnitTarget, HintEasier, HintHarder,";
@@ -459,7 +471,7 @@ namespace Moab.Models.Helpers
         private void RefreshHints(Exercise exercise, string[] CSVLine)
         {
             exercise.ExerciseHints.Clear();
-            for (int i = 0; i < findnumhints(CSVLine); i++)
+            for (int i = 0; i < FindNumHints(CSVLine); i++)
             {
                 var hint = new ExerciseHint();
                 hint.Id = exercise.Id;
@@ -470,18 +482,16 @@ namespace Moab.Models.Helpers
         }
 
         /// <summary>
-        ///     Finds the number of hints (not including easierhint or
-        ///     harderhint) in the CSVLine
+        ///     Finds the number of hints (not including easierhint or harderhint) in the CSVLine
         /// </summary>
         /// <param name="CSVLine">
         ///     The input string array
         /// </param>
         /// <returns>
-        ///     Returns the number of hints (not including easierhint or
-        ///     harderhint) in the string array
+        ///     Returns the number of hints (not including easierhint or harderhint) in the string array
         /// </returns>
         /// <tag status="In-Progress/Requires Testing"></tag>
-        private int findnumhints(string[] CSVLine)
+        private int FindNumHints(string[] CSVLine)
         {
             const int numNonHintColumns = 13;
             if (CSVLine.Length >= numNonHintColumns)
@@ -495,8 +505,7 @@ namespace Moab.Models.Helpers
         }
 
         /// <summary>
-        ///     Converts "Y" or "y" into true and everything else into false
-        ///     Helper function for UpdateExercise()
+        ///     Converts "Y" or "y" into true and everything else into false Helper function for UpdateExercise()
         ///     <paramref name="input">
         ///         The input string (likely either Y or N)
         ///     </paramref>
@@ -511,9 +520,7 @@ namespace Moab.Models.Helpers
         }
 
         /// <summary>
-        ///     Splits each line into an array of strings
-        ///     Helper function to SplitCSVInput
-        ///     TODO: Implementation for non-fixed number of hints
+        ///     Splits each line into an array of strings Helper function to SplitCSVInput
         ///     <paramref name="CSVLine">
         ///         The line inputted in the form of a string
         ///         (see below to LineSplit function)
@@ -561,16 +568,16 @@ namespace Moab.Models.Helpers
         /// <summary>
         ///     Converts anything that is true to "Y" and false to "N"
         /// </summary>
-        /// <param name="YN">
+        /// <param name="value">
         ///     Boolean to convert
         /// </param>
         /// <returns>
         ///     "Y" if YN == true, false otherwise
         /// </returns>
         /// <tag status=Complete></tag>
-        private string ConvertBooltoYN(bool YN)
+        private string ConvertBooltoYN(bool value)
         {
-            if (YN)
+            if (value)
             {
                 return "Y";
             }
