@@ -511,16 +511,16 @@ namespace MoabTests.Models.Helpers
             "llected,UnitTarget,HintEasier,HintHarder,Hint1,Hint2,MDT_Class," +
             "MDT_AtHome,OldCode,Name_animationFile," +
             "Old_Name_animationFile", true)]
-        //testing if extra columns at the end affect result
+        //Extra columns at the end should be acceptable
         [InlineData("ExerciseCode,Name,CDT_Class,CDT_AtHome,IsMovementDataCo" +
             "llected,UnitTarget,HintEasier,HintHarder,Hint1,Hint2,MDT_Class," +
             "MDT_AtHome,OldCode,Name_animationFile,Old_Name_animationFile,xx" +
             ",e,y", true)]
-        //tests if spaces in the column names affect result
+        //Spaces in the column names should fail
         [InlineData("ExerciseCode,Name,CDT_Class,CDT_AtHome,IsMovementDataCo" +
             "llected,UnitTarget,Hint Easier,Hint Harder,Hint1,Hint2,MDT_Class," +
             "MDT_AtHome,OldCode,Name_animationFile," +
-            "Old_Name_animationFile", true)]
+            "Old_Name_animationFile", false)]
         //testing if new column at beginning somehow succeeds
         [InlineData("Object ID, ExerciseCode,Name,CDT_Class,CDT_AtHome,IsMovementDataCo" +
             "llected,UnitTarget,HintEasier,HintHarder,Hint1,Hint2,MDT_Class," +
