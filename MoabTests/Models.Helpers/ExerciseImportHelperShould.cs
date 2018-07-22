@@ -553,7 +553,7 @@ namespace MoabTests.Models.Helpers
             "Stand with your feet hip width apart and keep your legs straight as you shift weight from one foot to the other. ," +
             ",N,N,,STAB_012_X_StandingWeightShift,STAB_012 Standing Weight Shift";
             string input = validHeader + Environment.NewLine + inputLine;
-            var originalId = ((List<Exercise>)_existingExercises)[2].Id;
+            var originalId = _existingExercises.ToList()[2].Id;
             // Act
             var result = importer.ImportNoDelete(input, _existingExercises);
             // Assert
