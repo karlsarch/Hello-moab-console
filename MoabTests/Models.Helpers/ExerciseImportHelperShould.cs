@@ -15,84 +15,54 @@ namespace MoabTests.Models.Helpers
     /// </summary>
     public class ExerciseImportHelperShould
     {
+        #region Contants
+        public const string GoodHeader2Hints = "ExerciseCode,Name,CDT_Class,CDT_AtHome,IsMovementDataCo" +
+            "llected,UnitTarget,HintEasier,HintHarder,Hint1,Hint2,MDT_Class," +
+            "MDT_AtHome,OldCode,Name_animationFile," +
+            "Old_Name_animationFile";
+
+        #endregion
+
         #region Members
 
         public ICollection<Exercise> _existingExercises = new HashSet<Exercise>();
-        const string CSVInputex1 = "FLX_003_L,Old Calf stretch Left,\"Easy, " +
-            "Partner\",As a diamond.,Knees Stright,Heels on the floor,,,,,,,,,";
-        string[] CSVLineex1 = { "FLX_003_L", "Old Calf Stretch Left",
-            "Easy, Partner", "As a diamond", "", "", "", "", "", "", "",
-            "", "", "" };
-        const string CSVInputex2 = "FLX_003_R,Old Calf stretch Right,\"Easy, " +
-            "Partner\",As a diamond.,Knees Stright,Heels on the floor,Lean " +
-            "forward!,,,,,,,,";
-        string[] CSVLineex2 = { "FLX_003_R", "Old Calf Stretch Right",
-            "Easy, Partner", "As a diamond", "", "", "", "", "", "", "",
-            "", "", "" };
-        const string CSVInputex3 = "STAB_012_X,Standing weight shift,Don't m" +
-            "ove,Close your eyes,\"Look at a spot on the wall, but not too " +
-            "hard!\",,,,,,,,,,";
-        string[] CSVLineex3 = { "STAB_012_X", "Standing Weight Shift",
-            "Don't Move", "Close your eyes", "", "", "", "", "", "", "",
-            "", "", "" };
-        const string CSVInputex4 = "KSA_999_X,One Finger pull-up,Use two fin" +
-            "gers,Pinky Finger,,,,,,,,,,,";
-        string[] CSVLineex4 = { "KSA_999_X", "One Finger pull-up",
-            "Use Two Fingers", "Pinky Finger", "", "", "", "", "", "", "",
-            "", "", "" };
+        const string inputTextWithCommaInHint = "FLX_003_L,Old Calf stretch Left,Y,Y,N,N,\"Easy, " +
+             "Partner\",As a diamond.,Knees Straight,Heels on the floor,,,,,,,,,";
+        readonly string[] expectedinputTextWithCommaInHint = {"FLX_003_L","Old Calf stretch Left",
+            "Y","Y","N","N","Easy, Partner","As a diamond.","Knees Straight","Heels on the floor","","","","","","","","" };
+        const string CSVInputex2 = "FLX_003_R,Old Calf Stretch Right,Y,Y,N,N,\"Easy, " +
+                 "Partner\",As a diamond.,Knees Straight,Heels on the floor,Lean forward!,,,,,,,,";
+
+        const string CSVInputex3 = "STAB_012_X,Standing weight shift,Y,Y,N,N,Don't move,Close your eyes,\"Look at a spot on the wall, but not too " +
+        "hard!\",,,,,,,,,,";
+
+        const string CSVInputex4 = "KSA_999_X,One Finger pull-up,Y,Y,N,N,Use Two Fingers,Pinky Finger,,,,,,,,,,,";
+
         const string CSVListTest1 = "ExerciseCode,Name,CDT_Class,CDT" +
             "_AtHome,IsMovementDataCollected,UnitTarget," +
             "HintEasier,HintHarder,Hint1,Hint2,MDT_Class,MDT_AtHome,OldCode," +
-            "Name_animationFile,Old_Name_animationFile\n" +
-            ",,,,,,,,,,,,,,\nFLX_003_L,Old Calf stretch Left,\"Easy, Partner" +
-            "\",As a diamond.,,,,,,,,,,, \n" +
-            "FLX_003_R,Old Calf stretch Right,\"Easy, Partner\",As a diamond" +
-            ".,,,,,,,,,,,\n" +
-            "STAB_012_X,Standing weight shift,Don't move,Close your eyes,,,," +
-            ",,,,,,,\nKSA_999_X,One Finger pull-up,Use two fingers,Pinky Fin" +
+            "Name_animationFile,Old_Name_animationFile\r\n" +
+            ",,,,,,,,,,,,,,\r\nFLX_003_L,Old Calf stretch Left,Y,Y,N,N,\"Easy, Partner" +
+            "\",As a diamond.,,,,,,,,,,, \r\n" +
+            "FLX_003_R,Old Calf stretch Right,Y,Y,N,N\"Easy, Partner\",As a diamond" +
+            ".,,,,,,,,,,,\r\n" +
+            "STAB_012_X,Standing weight shift,Y,Y,N,N,Don't move,Close your eyes,,,," +
+            ",,,,,,,\r\nKSA_999_X,One Finger pull-up,Use Two Fingers,Pinky Fin" +
             "ger,,,,,,,,,,,";
-        const string CSVListTest2 = "ExerciseCode,Name,CDT_Class,CDT" +
-            "_AtHome,IsMovementDataCollected,UnitTarget," +
-            "HintEasier,HintHarder,Hint1,Hint2,MDT_Class,MDT_AtHome,OldCode," +
-            "Name_animationFile,Old_Name_animationFile\n" +
-            ",,,,,,,,,,,,,,\nFLX_003_L,Old Calf stretch Left,\"Easy, Partner" +
-            "\",As a diamond.,,,,,,,,,,, \n,,,,,,,,,,,,,,\n" +
-            "FLX_003_R,Old Calf stretch Right,\"Easy, Partner\",As a diamond" +
-            ".,,,,,,,,,,,\n,,,,,,,,,,,,,,\n" +
-            "STAB_012_X,Standing weight shift,Don't move,Close your eyes,,,," +
-            ",,,,,,,\nKSA_999_X,One Finger pull-up,Use two fingers,Pinky Fin" +
-            "ger,,,,,,,,,,,";
-        const string CSVListTest3 = "ExerciseCode,Name,CDT_Class,CDT" +
-            "_AtHome,IsMovementDataCollected,UnitTarget," +
-            "HintEasier,HintHarder,Hint1,Hint2,MDT_Class,MDT_AtHome,OldCode," +
-            "Name_animationFile,Old_Name_animationFile";
+
         const string CSVListTest4 = "ExerciseCode,Name,CDT_Class,CDT" +
             "_AtHome,IsMovementDataCollected,UnitTarget," +
             "HintEasier,HintHarder,Hint1,Hint2,MDT_Class,MDT_AtHome,OldCode," +
-            "Name_animationFile,Old_Name_animationFile\n" +
-            ",,,,,,,,,,,,,,\nFLX_003_L,Old Calf stretch Left,\"Easy, Partner" +
-            "\",As a diamond.,,,,,,,,,,, \n" +
-            "FLX_003_R,Old Calf stretch Right,\"Easy, Partner\",As a diamond" +
-            ".,,,,,,,,,,,\n" +
-            "STAB_012_X,Standing weight shift,Don't move,Close your eyes,,,," +
-            ",,,,,,,\nKSA_999_X,One Finger pull-up,Use two fingers,Pinky Fin" +
+            "Name_animationFile,Old_Name_animationFile\r\n" +
+            ",,,,,,,,,,,,,,\r\nFLX_003_L,Old Calf stretch Left,Y,Y,N,N,\"Easy, Partner" +
+            "\",As a diamond.,,,,,,,,,,, \r\n" +
+            "FLX_003_R,Old Calf stretch Right,Y,Y,N,N,\"Easy, Partner\",As a diamond" +
+            ".,,,,,,,,,,,\r\n" +
+            "STAB_012_X,Standing weight shift,Y,Y,N,N,Don't move,Close your eyes,,,," +
+            ",,,,,,,\r\nKSA_999_X,One Finger pull-up,Use Two Fingers,Pinky Fin" +
             "ger,,,,,,,,,,,";
-        const string numHintsInput1 = "InputHintNumTestExerciseCode,Name,CDT" +
-            "_Class,CDT_AtHome,IsMovementDataCollected,UnitTarget,HintEasier" +
-            ",HintHarder,Hint1,Hint2,MDT_Class,MDT_AtHome,OldCode,Name_anima" +
-            "tionFile,Old_Name_animationFile";
-        const string numHintsInput2 = "InputHintNumTestExerciseCode,Name,CDT" +
-            "_Class,CDT_AtHome,IsMovementDataCollected,UnitTarget,HintEasier" +
-            ",HintHarder,Hint1,Hint2,Hint3,Hint4,MDT_Class,MDT_AtHome,OldCode" +
-            ",Name_animationFile,Old_Name_animationFile";
-        const string numHintsInput3 = "InputHintNumTestExerciseCode,Name,CDT" +
-            "_Class,CDT_AtHome,IsMovementDataCollected,UnitTarget,HintEasier" +
-            ",HintHarder,MDT_Class,MDT_AtHome,OldCode,Name_anima" +
-            "tionFile,Old_Name_animationFile";
-        const string numHintsInput4 = "InputHintNumTestExerciseCode,Name,CDT" +
-            "_Class,CDT_AtHome,IsMovementDataCollected,UnitTarget,HintEasier" +
-            ",MDT_Class,MDT_AtHome,OldCode,Name_animationFile,Old_Name_anima" +
-            "tionFile";
+
+
 
         #endregion
 
@@ -148,19 +118,29 @@ namespace MoabTests.Models.Helpers
 
         #region Tests
 
-        /// <summary>
-        ///     Tests whether there are four exercises
-        /// </summary>
-        /// <tag status=Complete></tag>
-        [Fact]
-        public void HaveFourExercises()
+        [Theory]
+        [InlineData("a,b,c", new string[] { "a", "b", "c" })]
+        [InlineData("a,,b,c", new string[] { "a", "", "b", "c" })]
+        [InlineData("a,b c,d", new string[] { "a", "b c", "d" })]
+        [InlineData(" a, b,c ", new string[] { "a", "b", "c" })]
+        [InlineData("a,\"bee\",c", new string[] { "a", "bee", "c" })]
+        [InlineData("a,\"bee, see?\",d", new string[] { "a", "bee, see?", "d" })]
+        [InlineData(CSVInputex2, new string[] { "FLX_003_R", "Old Calf Stretch Right", "Y", "Y", "N", "N","Easy, Partner","As a diamond.", "Knees Straight", "Heels on the floor", "Lean forward!", "", "", "", "","", "", "" })]
+        [InlineData(CSVInputex3, new string[] { "STAB_012_X", "Standing weight shift","Y","Y","N","N","Don't move", "Close your eyes", "Look at a spot on the wall, but not too " +
+        "hard!", "", "", "", "", "", "","", "", "" })]
+        [InlineData(CSVInputex4, new string[] { "KSA_999_X", "One Finger pull-up","Y","Y","N","N","Use Two Fingers", "Pinky Finger", "", "", "", "", "", "", "","", "", "" })]
+        public void SplitLineIntoArray(string input, string[] expected)
         {
             // Arrange
+            var sut = new ExerciseImportHelper();
             // Act
-            int count = _existingExercises.Count;
-            // Assert
+            var result = sut.SplitCSVLine(input);
 
-            count.Should().Be(4);
+            // Assert
+            for (int i = 0; i<expected.Length; i++)
+            {
+                result[i].Should().Be(expected[i]);
+            }
         }
 
         /// <summary>
@@ -168,105 +148,63 @@ namespace MoabTests.Models.Helpers
         /// </summary>
         /// <tag status=Complete></tag>
         [Fact]
-        public void LineSplitting1()
+        public void SplitLineWithTwoHints()
         {
             // Arrange
-            ExerciseImportHelper TestImport = new ExerciseImportHelper();
-            string[] ex1Split = new string[14];
+
+            var input = GoodHeader2Hints + Environment.NewLine + inputTextWithCommaInHint;
+
+            var expectedExercise = new Exercise
+            {
+                ExerciseCode = "FLX_003_L",
+                Name = "Old Calf stretch Left",
+                EasierHint = "Easy, Partner",
+                HarderHint = "As a diamond."
+            };
+
+            ExerciseImportHelper importer = new ExerciseImportHelper();
             // Act
-            ex1Split = TestImport.TestLineSplit(CSVInputex1);
+            var result = importer.ImportWithoutDelete(input, new HashSet<Exercise>());
             // Assert
-            ex1Split.Should().Equals(CSVLineex1);
+            var resultEx = result.ToList()[0];
+
+            resultEx.ExerciseCode.Should().Be(expectedExercise.ExerciseCode);
+            resultEx.Name.Should().Be(expectedExercise.Name);
+            resultEx.EasierHint.Should().Be(expectedExercise.EasierHint);
+            resultEx.HarderHint.Should().Be(expectedExercise.HarderHint);
+            resultEx.ExerciseHints.Count().Should().Be(2);
+
+            resultEx.ExerciseHints.Should().Contain(c => c.Text == "Knees Straight");
+            resultEx.ExerciseHints.Should().Contain(c => c.Text == "Heels on the floor");
+
+
         }
 
-        /// <summary>
-        ///     Another function to test if the Line Splitting function works
-        /// </summary>
-        /// <tag status=Complete></tag>
-        [Fact]
-        public void TestSplitting2()
-        {
-            // Arrange
-            ExerciseImportHelper TestImport = new ExerciseImportHelper();
-            string[] ex2Split = new string[14];
-            // Act
-            ex2Split = TestImport.TestLineSplit(CSVInputex2);
-            // Assert
-            ex2Split.Should().Equals(CSVLineex2);
-        }
-
-        /// <summary>
-        ///     A third function to test if the line splitting function works
-        /// </summary>
-        /// <tag status=Complete></tag>
-        [Fact]
-        public void TestSplitting3()
-        {
-            // Arrange
-            ExerciseImportHelper TestImport = new ExerciseImportHelper();
-            string[] ex3Split = new string[14];
-            // Act
-            ex3Split = TestImport.TestLineSplit(CSVInputex3);
-            // Assert
-            ex3Split.Should().Equals(CSVLineex3);
-        }
-
-        /// <summary>
-        ///     The fourth function to test is the line splitting function works
-        /// </summary>
-        /// <tag status=Complete></tag>
-        [Fact]
-        public void TestSplitting4()
-        {
-            // Arrange
-            ExerciseImportHelper TestImport = new ExerciseImportHelper();
-            string[] ex4Split = new string[14];
-            // Act
-            ex4Split = TestImport.TestLineSplit(CSVInputex4);
-            // Assert
-            ex4Split.Should().Equals(CSVLineex4);
-        }
-
-        /// <summary>
-        ///     Tests whether the import function works (Test 1)
-        /// </summary>
-        /// <tag status=Complete></tag>
-        [Fact]
-        public void CSVImporttoListTesting1()
-        {
-            // Arrange
-            var Import = new ExerciseImportHelper();
-            var AllExList = new List<string[]>();
-            var ResultList = new List<string[]>();
-            ResultList.Add(CSVLineex1);
-            ResultList.Add(CSVLineex2);
-            ResultList.Add(CSVLineex3);
-            ResultList.Add(CSVLineex4);
-            // Act
-            AllExList = Import.TestInputProcessing(CSVListTest1);
-            // Assert
-            AllExList.Should().Equals(ResultList);
-        }
 
         /// <summary>
         ///     Tests whether the import function will ignore blank lines (test 2)
         /// </summary>
         /// <tag status=Complete</tag>
         [Fact]
-        public void CSVImporttoListTesting2()
+        public void IgnoreBlankLines()
         {
+            const string CSVListTest2 = "ExerciseCode,Name,CDT_Class,CDT" +
+                     "_AtHome,IsMovementDataCollected,UnitTarget," +
+                     "HintEasier,HintHarder,Hint1,Hint2,MDT_Class,MDT_AtHome,OldCode," +
+                     "Name_animationFile,Old_Name_animationFile\r\n" +
+                     ",,,,,,,,,,,,,,\r\nFLX_003_L,Old Calf stretch Left,Y,n,y,n,\"Easy, Partner" +
+                     "\",As a diamond.,,,,,,,,,,, \r\n,,,,,,,,,,,,,,\r\n" +
+                     "FLX_003_R,Old Calf stretch Right,Y,n,y,n,\"Easy, Partner\",As a diamond" +
+                     ".,,,,,,,,,,,\r\n,,,,,,,,,,,,,,\r\n" +
+                     "STAB_012_X,Standing weight shift,Y,n,y,n,Don't move,Close your eyes,,,," +
+                     ",,,,,,,\r\nKSA_999_X,One Finger pull-up,Y,n,y,n,Use two fingers,Pinky Fin" +
+                     "ger,,,,,,,,,,,";
             // Arrange
-            var Import = new ExerciseImportHelper();
-            var AllExList = new List<string[]>();
-            var ResultList = new List<string[]>();
-            ResultList.Add(CSVLineex1);
-            ResultList.Add(CSVLineex2);
-            ResultList.Add(CSVLineex3);
-            ResultList.Add(CSVLineex4);
+            var importer = new ExerciseImportHelper();
             // Act
-            AllExList = Import.TestInputProcessing(CSVListTest2);
+            var allExList = importer.ImportWithoutDelete(CSVListTest2, new List<Exercise>());
             // Assert
-            AllExList.Should().Equals(ResultList);
+            allExList.Count().Should().Be(4);
         }
 
         /// <summary>
@@ -274,69 +212,72 @@ namespace MoabTests.Models.Helpers
         /// </summary>
         /// <tag status=Completed></tag>
         [Fact]
-        public void CSVImporttoListTesting3()
+        public void ThrowExceptionWhenHeaderIsBad()
         {
+            const string CSVListTest3 = "ExerciseCode,Name,CDT_Class,CDT" +
+                    "_AtHome,IsMovementDataCollected,UnitTarget," +
+                    "HintEasier,Hint Harder,Hint1,Hint2,MDT_Class,MDT_AtHome,OldCode," +
+                    "Name_animationFile,Old_Name_animationFile\r\nFLX_003_L";
             // Arrange
             var Import = new ExerciseImportHelper();
             var AllExList = new List<string[]>();
             // Act
-            Action act = () => Import.TestInputProcessing(CSVListTest3);
+            Action act1 = () => Import.ImportWithoutDelete(CSVListTest3, new List<Exercise>());
+            Action act2 = () => Import.ImportWithDelete(CSVListTest3, new List<Exercise>());
             // Assert
-            act.Should().Throw<FormatException>();
+            act1.Should().Throw<FormatException>();
+            act2.Should().Throw<FormatException>();
         }
 
         /// <summary>
-        ///     Test the findNumHints function (test 1)
+        ///     Tests whether the import function throws correct error (Test 3)
+        /// </summary>
+        /// <tag status=Completed></tag>
+        [Fact]
+        public void ThrowExceptionWhenNoDataIsThere()
+        {
+            const string CSVListTest3 = "ExerciseCode,Name,CDT_Class,CDT" +
+                    "_AtHome,IsMovementDataCollected,UnitTarget," +
+                    "HintEasier,Hint Harder,Hint1,Hint2,MDT_Class,MDT_AtHome,OldCode," +
+                    "Name_animationFile,Old_Name_animationFile";
+            // Arrange
+            var Import = new ExerciseImportHelper();
+            var AllExList = new List<string[]>();
+            // Act
+            Action act1 = () => Import.ImportWithoutDelete(CSVListTest3, new List<Exercise>());
+            Action act2 = () => Import.ImportWithDelete(CSVListTest3, new List<Exercise>());
+            // Assert
+            act1.Should().Throw<ArgumentException>();
+            act2.Should().Throw<ArgumentException>();
+        }
+
+        /// <summary>
+        ///     Test the findNumHints function 
         /// </summary>
         /// <tag status="Complete"></tag>
-        [Fact]
-        public void NumHintsTest1()
+        /// 
+        [Theory]
+        [InlineData("InputHintNumTestExerciseCode,Name,CDT_Class,CDT_AtHome,IsMovementDataCollected,UnitTarget,HintEasier," +
+                    "HintHarder,Hint1,Hint2,MDT_Class,MDT_AtHome,OldCode,Name_animationFile,Old_Name_animationFile", 2)]
+        [InlineData("InputHintNumTestExerciseCode,Name,CDT" +
+            "_Class,CDT_AtHome,IsMovementDataCollected,UnitTarget,HintEasier" +
+            ",HintHarder,Hint1,Hint2,Hint3,Hint4,MDT_Class,MDT_AtHome,OldCode" +
+            ",Name_animationFile,Old_Name_animationFile", 4)]
+        [InlineData("InputHintNumTestExerciseCode,Name,CDT" +
+            "_Class,CDT_AtHome,IsMovementDataCollected,UnitTarget,HintEasier" +
+            ",HintHarder,MDT_Class,MDT_AtHome,OldCode,Name_anima" +
+            "tionFile,Old_Name_animationFile", 0)]
+        public void FindTheNumberOfHintsinHeader(string header, int expectedHintCount )
         {
             //Arrange
-            var objectUnderTest = new ExerciseImportHelper();
+
+            var importer = new ExerciseImportHelper();
+            var csvArray = importer.SplitCSVLine(header);
             //Act
+            var result = importer.FindNumHints(csvArray);
             //Assert
-            objectUnderTest.TestnumHints(numHintsInput1).Equals(2);
-        }
-        /// <summary>
-        ///     Test the findNumHints function (test 4)
-        /// </summary>
-        /// <tag status="Complete"></tag>
-        [Fact]
-        public void NumHintsTest2()
-        {
-            //Arrange
-            var objectUnderTest = new ExerciseImportHelper();
-            //Act
-            //Assert
-            objectUnderTest.TestnumHints(numHintsInput2).Equals(4);
-        }
-        /// <summary>
-        ///     Test the findNumHints function (test 4)
-        /// </summary>
-        /// <tag status="Complete"></tag>
-        [Fact]
-        public void NumHintsTest3()
-        {
-            //Arrange
-            var objectUnderTest = new ExerciseImportHelper();
-            //Act
-            //Assert
-            objectUnderTest.TestnumHints(numHintsInput3).Equals(0);
-        }
-        /// <summary>
-        ///     Test the findNumHints function (test 4)
-        /// </summary>
-        /// <tag stagus="Complete"></tag>
-        [Fact]
-        public void NumHintsTest4()
-        {
-            //Arrange
-            var objectUnderTest = new ExerciseImportHelper();
-            //Act
-            Action act = () => objectUnderTest.TestnumHints(numHintsInput4);
-            //Assert
-            act.Should().Throw<FormatException>();
+            result.Should().Be(expectedHintCount);
+
         }
 
         /// <summary>
@@ -344,10 +285,9 @@ namespace MoabTests.Models.Helpers
         /// </summary>
         /// <tag status=Complete></tag>
         [Fact]
-        public void RefreshHintsTest1()
+        public void RefreshHintsInExercise()
         {
             // Arrange
-            var objectUnderTest = new ExerciseImportHelper();
             var ex1 = new Exercise
             {
                 ExerciseCode = "FLX_003_L",
@@ -355,6 +295,7 @@ namespace MoabTests.Models.Helpers
                 EasierHint = "Easy, Partner",
                 HarderHint = "As a diamond."
             };
+
             var hint1 = new ExerciseHint()
             {
                 Id = ex1.Id,
@@ -367,13 +308,19 @@ namespace MoabTests.Models.Helpers
                 Text = "Heels on the floor",
                 ExerciseID = ex1.Id
             };
-            ICollection<ExerciseHint> hints = new HashSet<ExerciseHint>();
-            hints.Add(hint1);
-            hints.Add(hint2);
+            ICollection<ExerciseHint> hints = new HashSet<ExerciseHint>
+            {
+                hint1,
+                hint2
+            };
+
+            var importer = new ExerciseImportHelper();
+            var line = importer.SplitCSVLine(inputTextWithCommaInHint);
+
             // Act
-            objectUnderTest.TestHints(ex1, CSVInputex1);
+            importer.RefreshHints(ex1, line);
             //Assert
-            ex1.ExerciseHints.Equals(hints);
+            ex1.ExerciseHints.Equals(hints); // TODO: Fix
         }
 
         /// <summary>
@@ -410,12 +357,17 @@ namespace MoabTests.Models.Helpers
                 Text = "Lean forward!",
                 ExerciseID = ex2.Id
             };
-            ICollection<ExerciseHint> hints = new HashSet<ExerciseHint>();
-            hints.Add(hint1);
-            hints.Add(hint2);
-            hints.Add(hint3);
+            ICollection<ExerciseHint> hints = new HashSet<ExerciseHint>
+            {
+                hint1,
+                hint2,
+                hint3
+            };
+            var importer = new ExerciseImportHelper();
+            var line = importer.SplitCSVLine(CSVInputex2);
+
             // Act
-            objectUnderTest.TestHints(ex2, CSVInputex2);
+            importer.RefreshHints(ex2, line);
             //Assert
             ex2.ExerciseHints.Equals(hints);
         }
@@ -442,10 +394,15 @@ namespace MoabTests.Models.Helpers
                 Text = "\"Look at a spot on the wall, but not too hard!\"",
                 ExerciseID = ex3.Id
             };
-            ICollection<ExerciseHint> hints = new HashSet<ExerciseHint>();
-            hints.Add(hint1);
+            ICollection<ExerciseHint> hints = new HashSet<ExerciseHint>
+            {
+                hint1
+            };
+            var importer = new ExerciseImportHelper();
+            var line = importer.SplitCSVLine(CSVInputex3);
+
             // Act
-            objectUnderTest.TestHints(ex3, CSVInputex3);
+            importer.RefreshHints(ex3, line);
             //Assert
             ex3.ExerciseHints.Equals(hints);
         }
@@ -468,8 +425,11 @@ namespace MoabTests.Models.Helpers
             };
 
             ICollection<ExerciseHint> hints = new HashSet<ExerciseHint>();
+            var importer = new ExerciseImportHelper();
+            var line = importer.SplitCSVLine(CSVInputex4);
+
             // Act
-            objectUnderTest.TestHints(ex4, CSVInputex3);
+            importer.RefreshHints(ex4, line);
             //Assert
             ex4.ExerciseHints.Equals(hints);
         }
@@ -486,10 +446,7 @@ namespace MoabTests.Models.Helpers
         /// </summary>
         [Theory]
         //perfectly formatted header should work
-        [InlineData("ExerciseCode,Name,CDT_Class,CDT_AtHome,IsMovementDataCo" +
-            "llected,UnitTarget,HintEasier,HintHarder,Hint1,Hint2,MDT_Class," +
-            "MDT_AtHome,OldCode,Name_animationFile," +
-            "Old_Name_animationFile", true)]
+        [InlineData(GoodHeader2Hints, true)]
         //missing column at end should not work
         [InlineData("ExerciseCode,Name,CDT_Class,CDT_AtHome,IsMovementDataCo" +
             "llected,UnitTarget,HintEasier,HintHarder,Hint1,Hint2,MDT_Class," +
@@ -511,29 +468,28 @@ namespace MoabTests.Models.Helpers
             "llected,UnitTarget,HintEasier,HintHarder,Hint1,Hint2,MDT_Class," +
             "MDT_AtHome,OldCode,Name_animationFile," +
             "Old_Name_animationFile", true)]
-        //testing if extra columns at the end affect result
+        //Extra columns at the end should be acceptable
         [InlineData("ExerciseCode,Name,CDT_Class,CDT_AtHome,IsMovementDataCo" +
             "llected,UnitTarget,HintEasier,HintHarder,Hint1,Hint2,MDT_Class," +
             "MDT_AtHome,OldCode,Name_animationFile,Old_Name_animationFile,xx" +
             ",e,y", true)]
-        //tests if spaces in the column names affect result
+        //Spaces in the column names should fail
         [InlineData("ExerciseCode,Name,CDT_Class,CDT_AtHome,IsMovementDataCo" +
             "llected,UnitTarget,Hint Easier,Hint Harder,Hint1,Hint2,MDT_Class," +
             "MDT_AtHome,OldCode,Name_animationFile," +
-            "Old_Name_animationFile", true)]
+            "Old_Name_animationFile", false)]
         //testing if new column at beginning somehow succeeds
         [InlineData("Object ID, ExerciseCode,Name,CDT_Class,CDT_AtHome,IsMovementDataCo" +
             "llected,UnitTarget,HintEasier,HintHarder,Hint1,Hint2,MDT_Class," +
             "MDT_AtHome,OldCode,Name_animationFile," +
             "Old_Name_animationFile", false)]
-
-        public void CheckHeaderTest(string header, bool isValidExpected)
+        public void CheckHeader(string header, bool isValidExpected)
         {
             // Arrange
 
-            ExerciseImportHelper HeaderTest = new ExerciseImportHelper();
+            ExerciseImportHelper importer = new ExerciseImportHelper();
             // Act
-            var result = HeaderTest.TestIsHeaderValid(header);
+            var result = importer.IsHeaderValid(header);
 
             // Assert
             result.Should().Be(isValidExpected);
@@ -551,11 +507,11 @@ namespace MoabTests.Models.Helpers
             string inputLine = "STAB_012_X,TestName,Y,Y,N,Y,make it easy," +
             "make it hard," +
             "Stand with your feet hip width apart and keep your legs straight as you shift weight from one foot to the other. ," +
-            ",N,N,,STAB_012_X_StandingWeightShift,STAB_012 Standing Weight Shift";
+            ",N,N,,STAB_012_X_StandingWeightShift,STAB_012 Standing weight shift";
             string input = validHeader + Environment.NewLine + inputLine;
             var originalId = _existingExercises.ToList()[2].Id;
             // Act
-            var result = importer.ImportNoDelete(input, _existingExercises);
+            var result = importer.ImportWithoutDelete(input, _existingExercises);
             // Assert
             List<Exercise> resultList = result.ToList();
             resultList[2].Name.Should().Be("TestName");
@@ -579,10 +535,10 @@ namespace MoabTests.Models.Helpers
             string inputLine = "JUMP_999_B,Standing backflip,Y,Y,N,Y,land on your back," +
             "double backflip," +
             "Push off with both feet. ,Use your muscles! ,Try harder! , " +
-            "N,N,,STAB_012_X_StandingWeightShift,STAB_012 Standing Weight Shift";
+            "N,N,,STAB_012_X_StandingWeightShift,STAB_012 Standing weight shift";
             string input = validHeader + Environment.NewLine + inputLine;
             // Act
-            var result = importer.ImportNoDelete(input, _existingExercises);
+            var result = importer.ImportWithoutDelete(input, _existingExercises);
             // Assert
             List<Exercise> resultList = result.ToList();
             resultList[4].ExerciseCode.Should().Be("JUMP_999_B");
@@ -605,10 +561,10 @@ namespace MoabTests.Models.Helpers
             string inputLine = "JUMP_999_B,Standing backflip,Y,Y,N,Y,land on your back," +
             "double backflip," +
             "Push off with both feet. ,Use your muscles!," +
-            "N,N,,STAB_012_X_StandingWeightShift,STAB_012 Standing Weight Shift";
+            "N,N,,STAB_012_X_StandingWeightShift,STAB_012 Standing weight shift";
             string input = validHeader + Environment.NewLine + inputLine;
             // Act
-            var result = importer.ImportNoDelete(input, _existingExercises);
+            var result = importer.ImportWithoutDelete(input, _existingExercises);
             // Assert
             List<Exercise> resultList = result.ToList();
             resultList[4].ExerciseCode.Should().Be("JUMP_999_B");
@@ -616,9 +572,10 @@ namespace MoabTests.Models.Helpers
             resultList[4].HasRepetitionTarget.Should().Be(true);
             resultList[4].EasierHint.Should().Be("land on your back");
             resultList[4].HarderHint.Should().Be("double backflip");
-            var hintList = resultList[4].ExerciseHints.ToList();
-            hintList[0].Should().Be("Push off with both feet. ");
-            hintList[1].Should().Be("Use your muscles! ");
+            var hintList = (from h in resultList[4].ExerciseHints
+                            select h.Text).ToList();
+            hintList[0].Should().Be("Push off with both feet.");
+            hintList[1].Should().Be("Use your muscles!");
             resultList.Count().Should().Be(5);
         }
 
@@ -634,10 +591,10 @@ namespace MoabTests.Models.Helpers
             string inputLine = "JUMP_999_B,Standing backflip,Y,Y,N,Y,land on your back," +
             "double backflip," +
             "Push off with both feet. ,Use your muscles! ,Try harder! , " +
-            "N,N,,STAB_012_X_StandingWeightShift,STAB_012 Standing Weight Shift";
+            "N,N,,STAB_012_X_StandingWeightShift,STAB_012 Standing weight shift";
             string input = validHeader + Environment.NewLine + inputLine;
             // Act
-            var result = importer.ImportNoDelete(input, _existingExercises);
+            var result = importer.ImportWithoutDelete(input, _existingExercises);
             // Assert
             List<Exercise> resultList = result.ToList();
             resultList[4].ExerciseCode.Should().Be("JUMP_999_B");
@@ -645,10 +602,11 @@ namespace MoabTests.Models.Helpers
             resultList[4].HasRepetitionTarget.Should().Be(true);
             resultList[4].EasierHint.Should().Be("land on your back");
             resultList[4].HarderHint.Should().Be("double backflip");
-            var hintList = resultList[4].ExerciseHints.ToList();
-            hintList[0].Should().Be("Push off with both feet. ");
-            hintList[1].Should().Be("Use your muscles! ");
-            hintList[2].Should().Be("Try Harder! ");
+            var hintList = (from h in resultList[4].ExerciseHints
+                            select h.Text).ToList();
+            hintList[0].Should().Be("Push off with both feet.");
+            hintList[1].Should().Be("Use your muscles!");
+            hintList[2].Should().Be("Try harder!");
             resultList.Count().Should().Be(5);
         }
 
@@ -700,7 +658,7 @@ namespace MoabTests.Models.Helpers
             string inputLine2 = "STAB_012_X,TestName,Y,Y,N,Y,make it easy," +
             "make it hard," +
             "Stand with your feet hip width apart and keep your legs straight as you shift weight from one foot to the other. ," +
-            ",N,N,,STAB_012_X_StandingWeightShift,STAB_012 Standing Weight Shift";
+            ",N,N,,STAB_012_X_StandingWeightShift,STAB_012 Standing weight shift";
             string input = validHeader + Environment.NewLine + inputLine + Environment.NewLine + inputLine2;
             var originalId = _existingExercises.ToList()[2].Id;
             // Act
