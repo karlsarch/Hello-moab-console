@@ -9,6 +9,7 @@ namespace Moab.Models.Helpers
 {
     class ExerciseExportHelper
     {
+        #region Public Methods
         /// <summary>
         ///     Exports a string in .csv form given a collection of exercises.
         /// </summary>
@@ -29,6 +30,9 @@ namespace Moab.Models.Helpers
             return ExportCSV;
         }
 
+        #endregion
+
+        #region Private/Protected Methods
         /// <summary>
         ///     Turns each exercise into a string that is the csv format of
         ///     the exercise
@@ -139,5 +143,7 @@ namespace Moab.Models.Helpers
             }
             return "N";
         }
+
+        #endregion
     }
 }
