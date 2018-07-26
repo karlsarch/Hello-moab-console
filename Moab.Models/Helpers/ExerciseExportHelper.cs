@@ -7,7 +7,7 @@ using Nymbl.Models.POCO;
 
 namespace Moab.Models.Helpers
 {
-    class ExerciseExportHelper
+    class ExerciseExportHelper 
     {
         #region Public Methods
         /// <summary>
@@ -69,31 +69,6 @@ namespace Moab.Models.Helpers
             return CSVLine;
         }
 
-        /// <summary>
-        ///     Returns a string that is a valid header and emty line for the
-        ///     collection of exercises with the maximum number of hints
-        ///     passed in.
-        /// </summary>
-        /// <param name="maxNumHints">
-        ///     The maximum number of hints any exercise in this collection has
-        /// </param>
-        /// <returns>
-        ///     A string that is the header for a .CSV file
-        /// </returns>
-        /// <tag status="Complete"></tag>
-        protected string CreateHeader(int maxNumHints)
-        {
-            string CSV = "ExerciseCode, Name, CDT_Class, CDT_AtHome, IsMov" +
-                "ementDataCollected, UnitTarget, HintEasier, HintHarder,";
-            for (int i = 1; i <= maxNumHints; i++)
-            {
-                CSV += "Hint" + i.ToString() + ",";
-            }
-            CSV += "MDT_Class,MDT_AtHome,OldCode,Name_animationFile,Old_Nam" +
-                "e_animationFile" + Environment.NewLine + ",,,,,,,,,,,,," +
-                "," + Environment.NewLine;
-            return CSV;
-        }
 
         /// <summary>
         ///     Finds the maximum number of hints any exercise in the

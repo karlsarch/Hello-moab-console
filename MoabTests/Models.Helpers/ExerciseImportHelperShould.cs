@@ -132,7 +132,8 @@ namespace MoabTests.Models.Helpers
         public void SplitLineIntoArray(string input, string[] expected)
         {
             // Arrange
-            var sut = new ExerciseImportHelper();
+            var processor = new CSVProcessorMock();
+            var sut = new ExerciseImportHelper(processor);
             // Act
             var result = sut.SplitCSVLine(input);
 

@@ -16,29 +16,31 @@ namespace Moab.Models.Helpers
     {
         #region Members
 
-        public enum ExerciseCSVPreHintColumns
-        {
-            ExerciseCode, Name, CDT_Class, CDT_AtHome,
-            IsMovementDataCollected, UnitTarget, HintEasier, HintHarder           
-        }
-        public enum ExerciseCSVPostHintColumns
-        {
-            MDT_Class, MDT_AtHome, OldCode, Name_animationFile,
-            Old_Name_animationFile
-        }
+
 
         // Easier and Harder hints are "special" and not considered Hints per se, because they don't go into the ExerciseHints collection.
         // So
         private readonly int NumNonHintColumns; 
         private readonly int NumPreHintColumns;
+        private ICSVProcessor _csvProcessor;
         private int _numberOfHints;
 
         #endregion
 
         #region Constructors
 
+        public ExerciseImportHelper(ICSVProcessor processor)
+        {
+            _csvProcessor = processor;
+            var preVals = Enum.GetValues(typeof(ExerciseCSVPreHintColumns));
+            var postVals = Enum.GetValues(typeof(ExerciseCSVPostHintColumns));
+            NumNonHintColumns = preVals.Length + postVals.Length;
+            NumPreHintColumns = preVals.Length;
+        }
+
         public ExerciseImportHelper()
         {
+            _csvProcessor = new CSVProcessor();
             var preVals = Enum.GetValues(typeof(ExerciseCSVPreHintColumns));
             var postVals = Enum.GetValues(typeof(ExerciseCSVPostHintColumns));
             NumNonHintColumns = preVals.Length + postVals.Length;
@@ -72,7 +74,8 @@ namespace Moab.Models.Helpers
 
             if (!IsHeaderValid(importCSV.Substring(0, importCSV.IndexOf(Environment.NewLine))))
             {
-                var header = GenerateHeader(_numberOfHints);
+
+                var header = _csvProcessor.GenerateHeader(_numberOfHints);
 
                 throw new FormatException($"Input CSV has unexpected column format. Expected format: '{header}'. " +
                                           $"Note that a variable number of Hint columns are allowed.");
@@ -286,27 +289,6 @@ namespace Moab.Models.Helpers
 
         #region Private Methods
 
-
-        private static string GenerateHeader(int numberOfHints)
-        {
-            var preValues = Enum.GetNames(typeof(ExerciseCSVPreHintColumns));
-            var postValues = Enum.GetNames(typeof(ExerciseCSVPostHintColumns));
-            var values = new List<string>();
-            values.AddRange(preValues);
-            for (int j = 0; j < numberOfHints; j++)
-            {
-                values.Add($"Hint{j + 1}");
-            }
-            values.AddRange(postValues);
-
-            var sb = new StringBuilder($"{values[0]}");
-            for (int i = 1; i < values.Count; i++)
-            {
-                sb.Append($",{values[i]}");
-            }
-
-            return sb.ToString();
-        }
 
         /// <summary>
         ///     Refreshes the hints to the exercise.  Helper function to
