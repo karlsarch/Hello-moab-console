@@ -7,8 +7,28 @@ using Nymbl.Models.POCO;
 
 namespace Moab.Models.Helpers
 {
-    class ExerciseExportHelper 
+    class ExerciseExportHelper
     {
+        #region Members
+
+        private ICSVProcessor _csvProcessor;
+
+        #endregion
+
+        #region Constructors
+
+        public ExerciseExportHelper(ICSVProcessor processor)
+        {
+            _csvProcessor = processor;
+        }
+
+        public ExerciseExportHelper()
+        {
+            _csvProcessor = new CSVProcessor();
+        }
+
+        #endregion
+
         #region Public Methods
         /// <summary>
         ///     Exports a string in .csv form given a collection of exercises.
@@ -22,12 +42,13 @@ namespace Moab.Models.Helpers
         /// <tag status="Complete/Requires Testing"></tag>
         public string Export(ICollection<Exercise> exercises)
         {
-            string ExportCSV = CreateHeader(FindMaxNumHints(exercises));
+            var exportCSVStringBuilder = new StringBuilder(_csvProcessor.GenerateHeader(FindMaxNumHints(exercises)));
             foreach (Exercise i in exercises)
             {
-                ExportCSV += MakeCSVLine(i);
+                exportCSVStringBuilder.Append(MakeCSVLine(i));
             }
-            return ExportCSV;
+            string exportCSV = exportCSVStringBuilder.ToString();
+            return exportCSV;
         }
 
         #endregion

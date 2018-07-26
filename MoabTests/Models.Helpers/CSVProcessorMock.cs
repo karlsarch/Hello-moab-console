@@ -7,7 +7,7 @@ using Moab.Models.Helpers;
 
 namespace MoabTests.Models.Helpers
 {
-    class CSVProcessorMock : ICSVProcessor
+    internal class CSVProcessorMock : ICSVProcessor
     {
         public string GenerateHeader(int numberOfHints)
         {

@@ -20,7 +20,7 @@ namespace Moab.Models.Helpers
 
         // Easier and Harder hints are "special" and not considered Hints per se, because they don't go into the ExerciseHints collection.
         // So
-        private readonly int NumNonHintColumns; 
+        private readonly int NumNonHintColumns;
         private readonly int NumPreHintColumns;
         private ICSVProcessor _csvProcessor;
         private int _numberOfHints;
@@ -112,7 +112,7 @@ namespace Moab.Models.Helpers
             List<string[]> ImportList = SplitCSVInput(importCSV);
             if (!IsHeaderValid(importCSV.Substring(0, importCSV.IndexOf(Environment.NewLine))))
             {
-                var header = GenerateHeader(_numberOfHints);
+                var header = _csvProcessor.GenerateHeader(_numberOfHints);
 
                 throw new FormatException($"Input CSV has unexpected column format. Expected format: '{header}'. " +
                                           $"Note that a variable number of Hint columns are allowed.");
@@ -152,11 +152,11 @@ namespace Moab.Models.Helpers
         /// <tag status=Complete></tag>
         internal bool IsHeaderValid(string headerLine)
         {
-            
+
             try
             {
                 _numberOfHints = FindNumHints(headerLine.Split(','));
-                string expectedHeader = GenerateHeader(_numberOfHints);
+                string expectedHeader = _csvProcessor.GenerateHeader(_numberOfHints);
                 // Removes any unnecesary columns from the end of header
                 string headerWeCare = headerLine.Substring(0, expectedHeader.Length);
                 // Returns true if they are the same excluding case differences
@@ -257,8 +257,8 @@ namespace Moab.Models.Helpers
             // Create LineList
             var lineList = new List<string[]>();
 
-            var lines = csvInput.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);     
-            
+            var lines = csvInput.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
+
             if (lines.Count() < 2)
             {
                 throw new ArgumentException("Invalid input; no records found");
@@ -268,7 +268,7 @@ namespace Moab.Models.Helpers
             {
                 lineList.Add(SplitCSVLine(line));
             }
-            
+
             // Delete Header
             lineList.RemoveAt(0);
 
