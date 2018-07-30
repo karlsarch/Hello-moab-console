@@ -16,29 +16,31 @@ namespace Moab.Models.Helpers
     {
         #region Members
 
-        public enum ExerciseCSVPreHintColumns
-        {
-            ExerciseCode, Name, CDT_Class, CDT_AtHome,
-            IsMovementDataCollected, UnitTarget, HintEasier, HintHarder           
-        }
-        public enum ExerciseCSVPostHintColumns
-        {
-            MDT_Class, MDT_AtHome, OldCode, Name_animationFile,
-            Old_Name_animationFile
-        }
+
 
         // Easier and Harder hints are "special" and not considered Hints per se, because they don't go into the ExerciseHints collection.
         // So
-        private readonly int NumNonHintColumns; 
+        private readonly int NumNonHintColumns;
         private readonly int NumPreHintColumns;
+        private ICSVProcessor _csvProcessor;
         private int _numberOfHints;
 
         #endregion
 
         #region Constructors
 
+        public ExerciseImportHelper(ICSVProcessor processor)
+        {
+            _csvProcessor = processor;
+            var preVals = Enum.GetValues(typeof(ExerciseCSVPreHintColumns));
+            var postVals = Enum.GetValues(typeof(ExerciseCSVPostHintColumns));
+            NumNonHintColumns = preVals.Length + postVals.Length;
+            NumPreHintColumns = preVals.Length;
+        }
+
         public ExerciseImportHelper()
         {
+            _csvProcessor = new CSVProcessor();
             var preVals = Enum.GetValues(typeof(ExerciseCSVPreHintColumns));
             var postVals = Enum.GetValues(typeof(ExerciseCSVPostHintColumns));
             NumNonHintColumns = preVals.Length + postVals.Length;
@@ -72,7 +74,8 @@ namespace Moab.Models.Helpers
 
             if (!IsHeaderValid(importCSV.Substring(0, importCSV.IndexOf(Environment.NewLine))))
             {
-                var header = GenerateHeader(_numberOfHints);
+
+                var header = _csvProcessor.GenerateHeader(_numberOfHints);
 
                 throw new FormatException($"Input CSV has unexpected column format. Expected format: '{header}'. " +
                                           $"Note that a variable number of Hint columns are allowed.");
@@ -109,7 +112,7 @@ namespace Moab.Models.Helpers
             List<string[]> ImportList = SplitCSVInput(importCSV);
             if (!IsHeaderValid(importCSV.Substring(0, importCSV.IndexOf(Environment.NewLine))))
             {
-                var header = GenerateHeader(_numberOfHints);
+                var header = _csvProcessor.GenerateHeader(_numberOfHints);
 
                 throw new FormatException($"Input CSV has unexpected column format. Expected format: '{header}'. " +
                                           $"Note that a variable number of Hint columns are allowed.");
@@ -132,26 +135,6 @@ namespace Moab.Models.Helpers
             return updatedAndNewExercises;
         }
 
-        /// <summary>
-        ///     Exports a string in .csv form given a collection of exercises.
-        /// </summary>
-        /// <param name="exercises">
-        ///     The collection of exercises inputted
-        /// </param>
-        /// <returns>
-        ///     Returns a string that can be written directly to a .csv file
-        /// </returns>
-        /// <tag status="Complete/Requires Testing"></tag>
-        public string Export(ICollection<Exercise> exercises)
-        {
-            string ExportCSV = CreateHeader(FindMaxNumHints(exercises));
-            foreach (Exercise i in exercises)
-            {
-                ExportCSV += MakeCSVLine(i);
-            }
-            return ExportCSV;
-        }
-
         #endregion
 
 
@@ -169,11 +152,11 @@ namespace Moab.Models.Helpers
         /// <tag status=Complete></tag>
         internal bool IsHeaderValid(string headerLine)
         {
-            
+
             try
             {
                 _numberOfHints = FindNumHints(headerLine.Split(','));
-                string expectedHeader = GenerateHeader(_numberOfHints);
+                string expectedHeader = _csvProcessor.GenerateHeader(_numberOfHints);
                 // Removes any unnecesary columns from the end of header
                 string headerWeCare = headerLine.Substring(0, expectedHeader.Length);
                 // Returns true if they are the same excluding case differences
@@ -274,8 +257,8 @@ namespace Moab.Models.Helpers
             // Create LineList
             var lineList = new List<string[]>();
 
-            var lines = csvInput.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);     
-            
+            var lines = csvInput.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
+
             if (lines.Count() < 2)
             {
                 throw new ArgumentException("Invalid input; no records found");
@@ -285,7 +268,7 @@ namespace Moab.Models.Helpers
             {
                 lineList.Add(SplitCSVLine(line));
             }
-            
+
             // Delete Header
             lineList.RemoveAt(0);
 
@@ -302,123 +285,10 @@ namespace Moab.Models.Helpers
             return lineList;
         }
 
-        /// <summary>
-        ///     Turns each exercise into a string that is the csv format of
-        ///     the exercise
-        /// </summary>
-        /// <param name="exercise">
-        ///     The exercise to be turned into a string
-        /// </param>
-        /// <returns>
-        ///     A string that is the .csv format of the exercise including
-        ///     the newline character
-        /// </returns>
-        /// <tag status=In-Progress/Compiles></tag>
-        private string MakeCSVLine(Exercise exercise)
-        {
-            string CSVLine = string.Empty;
-            CSVLine += exercise.ExerciseCode + ",";
-            CSVLine += exercise.Name + ",";
-            for (int i = 0; i < 3; i++) // for CDT_Class, CDT_AtHome, and IsMovementDataCollected
-            {
-                CSVLine += "Unknown,";
-            }
-            CSVLine += ConvertBooltoYN(exercise.HasRepetitionTarget) + ",";
-            CSVLine += exercise.EasierHint + ",";
-            CSVLine += exercise.HarderHint + ",";
-            foreach (ExerciseHint hint in exercise.ExerciseHints)
-            {
-                CSVLine += hint.Text + ",";
-            }
-            for (int i = 0; i < 5; i++) // for MDT_Class, MDT_AtHome, OldCode, Name_animationFile, and Old_Name_animationFile
-            {
-                CSVLine += "Unknown,";
-            }
-            CSVLine += Environment.NewLine;
-            return CSVLine;
-        }
-
-        /// <summary>
-        ///     Finds the maximum number of hints any exercise in the
-        ///     collection has
-        /// </summary>
-        /// <param name="exercises">
-        ///     The collection of exercises that we are checking the hints for
-        /// </param>
-        /// <returns>
-        ///     The maximum number of hints that any of the exercises in the
-        ///     collection has
-        /// </returns>
-        /// <tag status="Complete"></tag>
-        internal static int FindMaxNumHints(ICollection<Exercise> exercises)
-        {
-            int maxNum = 0;
-            foreach (Exercise ex in exercises)
-            {
-                int numHints = 0;
-                foreach (ExerciseHint hint in ex.ExerciseHints)
-                {
-                    numHints++;
-                }
-                if (numHints > maxNum)
-                {
-                    maxNum = numHints;
-                }
-            }
-            return maxNum;
-        }
-
-        /// <summary>
-        ///     Returns a string that is a valid header and emty line for the
-        ///     collection of exercises with the maximum number of hints
-        ///     passed in.
-        /// </summary>
-        /// <param name="maxNumHints">
-        ///     The maximum number of hints any exercise in this collection has
-        /// </param>
-        /// <returns>
-        ///     A string that is the header for a .CSV file
-        /// </returns>
-        /// <tag status="Complete"></tag>
-        protected string CreateHeader(int maxNumHints)
-        {
-            string CSV = "ExerciseCode, Name, CDT_Class, CDT_AtHome, IsMov" +
-                "ementDataCollected, UnitTarget, HintEasier, HintHarder,";
-            for (int i = 1; i <= maxNumHints; i++)
-            {
-                CSV += "Hint" + i.ToString() + ",";
-            }
-            CSV += "MDT_Class,MDT_AtHome,OldCode,Name_animationFile,Old_Nam" +
-                "e_animationFile" + Environment.NewLine + ",,,,,,,,,,,,," +
-                "," + Environment.NewLine;
-            return CSV;
-        }
-
         #endregion
 
         #region Private Methods
 
-
-        private static string GenerateHeader(int numberOfHints)
-        {
-            var preValues = Enum.GetNames(typeof(ExerciseCSVPreHintColumns));
-            var postValues = Enum.GetNames(typeof(ExerciseCSVPostHintColumns));
-            var values = new List<string>();
-            values.AddRange(preValues);
-            for (int j = 0; j < numberOfHints; j++)
-            {
-                values.Add($"Hint{j + 1}");
-            }
-            values.AddRange(postValues);
-
-            var sb = new StringBuilder($"{values[0]}");
-            for (int i = 1; i < values.Count; i++)
-            {
-                sb.Append($",{values[i]}");
-            }
-
-            return sb.ToString();
-        }
 
         /// <summary>
         ///     Refreshes the hints to the exercise.  Helper function to
@@ -554,25 +424,6 @@ namespace Moab.Models.Helpers
             //    line[i] = LineList[i];
             //}
             //return line;
-        }
-
-        /// <summary>
-        ///     Converts anything that is true to "Y" and false to "N"
-        /// </summary>
-        /// <param name="value">
-        ///     Boolean to convert
-        /// </param>
-        /// <returns>
-        ///     "Y" if YN == true, false otherwise
-        /// </returns>
-        /// <tag status=Complete></tag>
-        private string ConvertBooltoYN(bool value)
-        {
-            if (value)
-            {
-                return "Y";
-            }
-            return "N";
         }
 
         #endregion
