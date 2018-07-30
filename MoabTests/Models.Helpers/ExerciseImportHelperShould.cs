@@ -252,10 +252,10 @@ namespace MoabTests.Models.Helpers
         }
 
         /// <summary>
-        ///     Test the findNumHints function 
+        ///     Test the findNumHints function
         /// </summary>
         /// <tag status="Complete"></tag>
-        /// 
+        ///
         [Theory]
         [InlineData("InputHintNumTestExerciseCode,Name,CDT_Class,CDT_AtHome,IsMovementDataCollected,UnitTarget,HintEasier," +
                     "HintHarder,Hint1,Hint2,MDT_Class,MDT_AtHome,OldCode,Name_animationFile,Old_Name_animationFile", 2)]
@@ -499,7 +499,8 @@ namespace MoabTests.Models.Helpers
         public void UpdateExisting()
         {
             // Arrange
-            var importer = new ExerciseImportHelper();
+            var processor = new CSVProcessorMock();
+            var importer = new ExerciseImportHelper(processor);
             const string validHeader = "ExerciseCode,Name,CDT_Class,CDT_AtHome,IsMovementDataCo" +
             "llected,UnitTarget,HintEasier,HintHarder,Hint1,Hint2,MDT_Class," +
             "MDT_AtHome,OldCode,Name_animationFile," +
@@ -620,9 +621,9 @@ namespace MoabTests.Models.Helpers
             "MDT_AtHome,OldCode,Name_animationFile," +
             "Old_Name_animationFile";
             string inputLine = "STAB_010_R,Half tandem stand Right,Y,Y,Y,N,wider stance," +
-                "put weight evenly on both feet,Remember the goal is to have your feet as close" + 
-                "as possible.Your left foot should be nestling inside your right instep. ," + 
-                "Do your best to stand up tall with your head aligned with your spine.," + 
+                "put weight evenly on both feet,Remember the goal is to have your feet as close" +
+                "as possible.Your left foot should be nestling inside your right instep. ," +
+                "Do your best to stand up tall with your head aligned with your spine.," +
                 " N, N,, STAB_010_R_ HalfTandemStand,STAB_010 Half tandem stand";
 
             string input = validHeader + Environment.NewLine + inputLine;
@@ -638,8 +639,8 @@ namespace MoabTests.Models.Helpers
             resultList[0].EasierHint.Should().Be("wider stance");
             resultList[0].HarderHint.Should().Be("put weight evenly on both feet");
         }
-        
-        //This both adds a new exercise and should remove one from the old list while adding it to 
+
+        //This both adds a new exercise and should remove one from the old list while adding it to
         //the new
         [Fact]
         public void CreateNewCollectionWithDeleteWithUpdate()

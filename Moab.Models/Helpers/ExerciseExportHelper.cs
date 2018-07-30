@@ -9,6 +9,26 @@ namespace Moab.Models.Helpers
 {
     class ExerciseExportHelper
     {
+        #region Members
+
+        private ICSVProcessor _csvProcessor;
+
+        #endregion
+
+        #region Constructors
+
+        public ExerciseExportHelper(ICSVProcessor processor)
+        {
+            _csvProcessor = processor;
+        }
+
+        public ExerciseExportHelper()
+        {
+            _csvProcessor = new CSVProcessor();
+        }
+
+        #endregion
+
         #region Public Methods
         /// <summary>
         ///     Exports a string in .csv form given a collection of exercises.
@@ -22,12 +42,13 @@ namespace Moab.Models.Helpers
         /// <tag status="Complete/Requires Testing"></tag>
         public string Export(ICollection<Exercise> exercises)
         {
-            string ExportCSV = CreateHeader(FindMaxNumHints(exercises));
+            var exportCSVStringBuilder = new StringBuilder(_csvProcessor.GenerateHeader(FindMaxNumHints(exercises)));
             foreach (Exercise i in exercises)
             {
-                ExportCSV += MakeCSVLine(i);
+                exportCSVStringBuilder.Append(MakeCSVLine(i));
             }
-            return ExportCSV;
+            string exportCSV = exportCSVStringBuilder.ToString();
+            return exportCSV;
         }
 
         #endregion
@@ -69,31 +90,6 @@ namespace Moab.Models.Helpers
             return CSVLine;
         }
 
-        /// <summary>
-        ///     Returns a string that is a valid header and emty line for the
-        ///     collection of exercises with the maximum number of hints
-        ///     passed in.
-        /// </summary>
-        /// <param name="maxNumHints">
-        ///     The maximum number of hints any exercise in this collection has
-        /// </param>
-        /// <returns>
-        ///     A string that is the header for a .CSV file
-        /// </returns>
-        /// <tag status="Complete"></tag>
-        protected string CreateHeader(int maxNumHints)
-        {
-            string CSV = "ExerciseCode, Name, CDT_Class, CDT_AtHome, IsMov" +
-                "ementDataCollected, UnitTarget, HintEasier, HintHarder,";
-            for (int i = 1; i <= maxNumHints; i++)
-            {
-                CSV += "Hint" + i.ToString() + ",";
-            }
-            CSV += "MDT_Class,MDT_AtHome,OldCode,Name_animationFile,Old_Nam" +
-                "e_animationFile" + Environment.NewLine + ",,,,,,,,,,,,," +
-                "," + Environment.NewLine;
-            return CSV;
-        }
 
         /// <summary>
         ///     Finds the maximum number of hints any exercise in the

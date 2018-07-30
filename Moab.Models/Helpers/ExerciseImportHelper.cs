@@ -16,29 +16,31 @@ namespace Moab.Models.Helpers
     {
         #region Members
 
-        public enum ExerciseCSVPreHintColumns
-        {
-            ExerciseCode, Name, CDT_Class, CDT_AtHome,
-            IsMovementDataCollected, UnitTarget, HintEasier, HintHarder           
-        }
-        public enum ExerciseCSVPostHintColumns
-        {
-            MDT_Class, MDT_AtHome, OldCode, Name_animationFile,
-            Old_Name_animationFile
-        }
+
 
         // Easier and Harder hints are "special" and not considered Hints per se, because they don't go into the ExerciseHints collection.
         // So
-        private readonly int NumNonHintColumns; 
+        private readonly int NumNonHintColumns;
         private readonly int NumPreHintColumns;
+        private ICSVProcessor _csvProcessor;
         private int _numberOfHints;
 
         #endregion
 
         #region Constructors
 
+        public ExerciseImportHelper(ICSVProcessor processor)
+        {
+            _csvProcessor = processor;
+            var preVals = Enum.GetValues(typeof(ExerciseCSVPreHintColumns));
+            var postVals = Enum.GetValues(typeof(ExerciseCSVPostHintColumns));
+            NumNonHintColumns = preVals.Length + postVals.Length;
+            NumPreHintColumns = preVals.Length;
+        }
+
         public ExerciseImportHelper()
         {
+            _csvProcessor = new CSVProcessor();
             var preVals = Enum.GetValues(typeof(ExerciseCSVPreHintColumns));
             var postVals = Enum.GetValues(typeof(ExerciseCSVPostHintColumns));
             NumNonHintColumns = preVals.Length + postVals.Length;
@@ -72,7 +74,8 @@ namespace Moab.Models.Helpers
 
             if (!IsHeaderValid(importCSV.Substring(0, importCSV.IndexOf(Environment.NewLine))))
             {
-                var header = GenerateHeader(_numberOfHints);
+
+                var header = _csvProcessor.GenerateHeader(_numberOfHints);
 
                 throw new FormatException($"Input CSV has unexpected column format. Expected format: '{header}'. " +
                                           $"Note that a variable number of Hint columns are allowed.");
@@ -109,7 +112,7 @@ namespace Moab.Models.Helpers
             List<string[]> ImportList = SplitCSVInput(importCSV);
             if (!IsHeaderValid(importCSV.Substring(0, importCSV.IndexOf(Environment.NewLine))))
             {
-                var header = GenerateHeader(_numberOfHints);
+                var header = _csvProcessor.GenerateHeader(_numberOfHints);
 
                 throw new FormatException($"Input CSV has unexpected column format. Expected format: '{header}'. " +
                                           $"Note that a variable number of Hint columns are allowed.");
@@ -149,11 +152,11 @@ namespace Moab.Models.Helpers
         /// <tag status=Complete></tag>
         internal bool IsHeaderValid(string headerLine)
         {
-            
+
             try
             {
                 _numberOfHints = FindNumHints(headerLine.Split(','));
-                string expectedHeader = GenerateHeader(_numberOfHints);
+                string expectedHeader = _csvProcessor.GenerateHeader(_numberOfHints);
                 // Removes any unnecesary columns from the end of header
                 string headerWeCare = headerLine.Substring(0, expectedHeader.Length);
                 // Returns true if they are the same excluding case differences
@@ -254,8 +257,8 @@ namespace Moab.Models.Helpers
             // Create LineList
             var lineList = new List<string[]>();
 
-            var lines = csvInput.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);     
-            
+            var lines = csvInput.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
+
             if (lines.Count() < 2)
             {
                 throw new ArgumentException("Invalid input; no records found");
@@ -265,7 +268,7 @@ namespace Moab.Models.Helpers
             {
                 lineList.Add(SplitCSVLine(line));
             }
-            
+
             // Delete Header
             lineList.RemoveAt(0);
 
@@ -286,27 +289,6 @@ namespace Moab.Models.Helpers
 
         #region Private Methods
 
-
-        private static string GenerateHeader(int numberOfHints)
-        {
-            var preValues = Enum.GetNames(typeof(ExerciseCSVPreHintColumns));
-            var postValues = Enum.GetNames(typeof(ExerciseCSVPostHintColumns));
-            var values = new List<string>();
-            values.AddRange(preValues);
-            for (int j = 0; j < numberOfHints; j++)
-            {
-                values.Add($"Hint{j + 1}");
-            }
-            values.AddRange(postValues);
-
-            var sb = new StringBuilder($"{values[0]}");
-            for (int i = 1; i < values.Count; i++)
-            {
-                sb.Append($",{values[i]}");
-            }
-
-            return sb.ToString();
-        }
 
         /// <summary>
         ///     Refreshes the hints to the exercise.  Helper function to
