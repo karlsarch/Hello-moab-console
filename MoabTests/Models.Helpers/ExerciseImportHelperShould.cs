@@ -15,7 +15,7 @@ namespace MoabTests.Models.Helpers
     /// </summary>
     public class ExerciseImportHelperShould
     {
-        #region Contants
+        #region Constants
         public const string GoodHeader2Hints = "ExerciseCode,Name,CDT_Class,CDT_AtHome,IsMovementDataCo" +
             "llected,UnitTarget,HintEasier,HintHarder,Hint1,Hint2,MDT_Class," +
             "MDT_AtHome,OldCode,Name_animationFile," +
