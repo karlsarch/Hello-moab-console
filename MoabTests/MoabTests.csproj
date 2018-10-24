@@ -64,6 +64,7 @@
   <ItemGroup>
     <Compile Include="Models.Helpers\CSVProcessorMock.cs" />
     <Compile Include="Models.Helpers\ExerciseImportHelperShould.cs" />
+    <Compile Include="Models.Helpers\RTTLHelperTests.cs" />
     <Compile Include="Models\Tour_TrailShould.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -47,6 +47,7 @@
     <Compile Include="Helpers\ExerciseExportHelper.cs" />
     <Compile Include="Helpers\ExerciseImportHelper.cs" />
     <Compile Include="Helpers\ICSVProcessor.cs" />
+    <Compile Include="Helpers\RTTLHelper.cs" />
     <Compile Include="Tour.cs" />
     <Compile Include="Tour_Trail.cs" />
     <Compile Include="Trail.cs" />
